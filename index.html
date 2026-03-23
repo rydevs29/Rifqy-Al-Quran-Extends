@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rifqy Al-Quran - Auto Theme Edition</title>
+    <title>Rifqy Al-Quran - Ultimate Emerald</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,130 +12,177 @@
 
     <div class="app-layout">
         <aside class="sidebar desktop-only">
-            <div class="brand-logo">
-                <i class="fas fa-book-open"></i> Rifqy Quran
-            </div>
+            <div class="brand-logo"><i class="fas fa-book-open"></i> Rifqy Quran</div>
             <nav class="side-nav">
-                <button onclick="switchPage('page-home')" class="nav-btn active" id="nav-home-desk"><i class="fas fa-quran"></i> Baca Quran</button>
-                <button onclick="switchPage('page-tools')" class="nav-btn" id="nav-tools-desk"><i class="fas fa-compass"></i> Jadwal & Alat</button>
-                <button onclick="openSettingsModal()" class="nav-btn"><i class="fas fa-cog"></i> Pengaturan</button>
+                <button onclick="switchPage('page-home')" class="nav-btn active" id="nav-home-desk"><i class="fas fa-quran"></i> Beranda</button>
+                <button onclick="switchPage('page-tools')" class="nav-btn" id="nav-tools-desk"><i class="fas fa-compass"></i> Alat & Alarm</button>
+                <button onclick="switchPage('page-community')" class="nav-btn" id="nav-comm-desk"><i class="fas fa-users"></i> Komunitas</button>
             </nav>
         </aside>
 
         <main class="main-content">
             <header class="top-header mobile-only">
                 <div class="brand-logo"><i class="fas fa-book-open"></i> Rifqy Quran</div>
-                <button class="btn-icon" onclick="openSettingsModal()"><i class="fas fa-sliders-h"></i></button>
+                <div class="date-hijri text-primary" id="date-hijri-mob" onclick="openCalendarModal()">Memuat...</div>
             </header>
 
             <section id="page-home" class="page active">
-                <div class="header-banner">
-                    <div class="date-container" onclick="openCalendarModal()">
-                        <div id="date-gregorian" class="date-greg">Memuat...</div>
-                        <div id="date-hijri" class="date-hijri">Memuat... <i class="fas fa-calendar-alt"></i></div>
+                <div class="smart-banner mb-3">
+                    <div class="flex-between">
+                        <div>
+                            <small><i class="fas fa-sparkles"></i> Rekomendasi Hari Ini</small>
+                            <h3 class="mt-1">Surat Al-Kahfi</h3>
+                            <p class="small opacity-75">Sunnah dibaca pada hari Jumat.</p>
+                        </div>
+                        <button class="btn-primary" onclick="openSurah(18)"><i class="fas fa-play"></i> Baca</button>
                     </div>
                 </div>
 
-                <div class="search-wrapper">
+                <div id="continue-reading-card" class="tool-card hidden mb-3 cursor-pointer" onclick="continueReading()">
+                    <div class="flex-between">
+                        <div>
+                            <small class="text-muted">Lanjutkan Membaca</small>
+                            <h3 class="text-primary mt-1" id="cr-surah">Al-Baqarah</h3>
+                            <p class="small text-muted" id="cr-ayah">Ayat 12</p>
+                        </div>
+                        <div class="icon-circle"><i class="fas fa-bookmark"></i></div>
+                    </div>
+                </div>
+
+                <div class="search-wrapper mb-3">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="search-input" placeholder="Cari Surat (misal: Kahfi)..." oninput="filterSurah()">
+                    <input type="text" id="search-input" placeholder="Cari Surat (Nama/Nomor)..." oninput="filterSurah()">
+                    <button class="btn-icon" onclick="startVoiceSearch()"><i class="fas fa-microphone text-primary"></i></button>
                 </div>
                 
-                <div id="surah-list" class="surah-grid">
-                    <div class="loading-text"><i class="fas fa-spinner fa-spin"></i> Memuat Al-Quran...</div>
-                </div>
+                <div id="surah-list" class="surah-grid"></div>
             </section>
 
             <section id="page-read" class="page">
-                <div class="read-navbar">
-                    <button class="btn-back" onclick="switchPage('page-home')"><i class="fas fa-arrow-left"></i></button>
-                    <div class="surah-title-header">
-                        <h2 id="read-surah-name">Nama Surat</h2>
-                        <small id="read-surah-info">Info Surat</small>
+                <div class="read-navbar mb-3">
+                    <div class="flex-between w-100">
+                        <button class="btn-back" onclick="switchPage('page-home')"><i class="fas fa-arrow-left"></i></button>
+                        <div class="text-center">
+                            <h2 id="read-surah-name" class="text-primary">Nama Surat</h2>
+                            <small id="read-surah-info" class="text-muted">Info Surat</small>
+                        </div>
+                        <button class="btn-icon" onclick="openSettingsModal()"><i class="fas fa-cog"></i></button>
                     </div>
-                    <button class="btn-icon" onclick="toggleAudioSurah()"><i id="btn-play-surah" class="fas fa-play-circle"></i></button>
+                    
+                    <div class="read-toolbar mt-3">
+                        <label class="toggle-row small m-0">
+                            <span>Autoplay Audio</span>
+                            <input type="checkbox" id="toggle-autoplay" checked onchange="toggleAutoplay()">
+                        </label>
+                        <button class="btn-outline-primary small" onclick="openTafsirSurah()"><i class="fas fa-book"></i> Tafsir</button>
+                        <button class="btn-outline-primary small" onclick="bookmarkCurrent()"><i class="fas fa-bookmark"></i> Tandai</button>
+                    </div>
                 </div>
+                
                 <div id="ayah-list" class="ayah-container"></div>
             </section>
 
             <section id="page-tools" class="page">
-                <h2 class="section-title">Alat Muslim</h2>
+                <h2 class="section-title">Alat & Alarm Custom</h2>
                 
-                <div class="tool-card">
-                    <div class="card-header-flex">
-                        <h3><i class="fas fa-clock"></i> Jadwal Sholat</h3>
-                        <small id="location-text"><i class="fas fa-map-marker-alt"></i> Mencari lokasi...</small>
+                <div class="tool-card mb-3">
+                    <div class="flex-between mb-3">
+                        <h3><i class="fas fa-bell"></i> Alarm Pribadi</h3>
+                        <label class="switch"><input type="checkbox" id="alarm-master" onchange="toggleMasterAlarm()"><span class="slider"></span></label>
                     </div>
-                    <div class="prayer-times-grid" id="prayer-times">
-                        <div class="loading-text">Memuat jadwal...</div>
-                    </div>
-                </div>
-
-                <div class="tool-card text-center">
-                    <h3><i class="fas fa-kaaba"></i> Arah Kiblat</h3>
-                    <p class="text-muted small">Putar HP Anda untuk mencari arah Kiblat (Membutuhkan sensor kompas aktif).</p>
-                    <div class="compass-container">
-                        <div class="compass-ring" id="compass-ring">
-                            <i class="fas fa-location-arrow compass-arrow"></i>
+                    <div class="grid-2">
+                        <div>
+                            <small class="text-muted">Alarm Sahur/Tahajud</small>
+                            <input type="time" id="alarm-sahur" class="form-control mt-1" onchange="saveAlarms()">
+                        </div>
+                        <div>
+                            <small class="text-muted">Alarm Pengingat Sholat</small>
+                            <input type="time" id="alarm-sholat" class="form-control mt-1" onchange="saveAlarms()">
                         </div>
                     </div>
-                    <button class="btn-primary mt-3" onclick="startCompass()"><i class="fas fa-location-arrow"></i> Aktifkan Kompas</button>
                 </div>
 
-                <div class="tool-card text-center">
-                    <h3><i class="fas fa-mosque"></i> Masjid Terdekat</h3>
-                    <p class="text-muted small">Temukan masjid di sekitar Anda menggunakan Google Maps.</p>
-                    <button class="btn-primary mt-3" onclick="findNearbyMosque()"><i class="fas fa-map-marked-alt"></i> Cari Masjid Sekitar</button>
+                <div class="tool-card mb-3">
+                    <div class="flex-between">
+                        <h3><i class="fas fa-clock"></i> Jadwal Sholat</h3>
+                        <small id="location-text"><i class="fas fa-map-marker-alt"></i> Jakarta</small>
+                    </div>
+                    <div class="prayer-times-grid mt-3" id="prayer-times"></div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="tool-card text-center cursor-pointer" onclick="startCompass()">
+                        <i class="fas fa-kaaba text-primary" style="font-size:30px"></i>
+                        <h4 class="mt-2">Arah Kiblat</h4>
+                        <div id="compass-ring" class="mt-2"><i class="fas fa-location-arrow"></i></div>
+                    </div>
+                    <div class="tool-card text-center cursor-pointer" onclick="findNearbyMosque()">
+                        <i class="fas fa-mosque text-primary" style="font-size:30px"></i>
+                        <h4 class="mt-2">Masjid Terdekat</h4>
+                        <small class="text-muted">Buka Maps</small>
+                    </div>
+                </div>
+            </section>
+
+            <section id="page-community" class="page">
+                <h2 class="section-title">Vibe Ramadhan</h2>
+                
+                <div class="tool-card mb-3 bg-primary text-white">
+                    <h3><i class="fas fa-users"></i> Khatam Bareng (Grup)</h3>
+                    <p class="small mt-1 opacity-75">Progres Grup "Keluarga Rifqy"</p>
+                    <div class="progress-bar mt-2"><div class="progress-fill" style="width: 45%;"></div></div>
+                    <small>13 Juz / 30 Juz (45%)</small>
+                </div>
+
+                <div class="grid-2 mb-3">
+                    <div class="tool-card text-center cursor-pointer" onclick="alert('Membuka Kuis Tajwid...')">
+                        <i class="fas fa-gamepad text-primary" style="font-size:30px"></i>
+                        <h4 class="mt-2">Kuis Islami</h4>
+                    </div>
+                    <div class="tool-card text-center cursor-pointer" onclick="alert('Membuka Papan Doa Bersama...')">
+                        <i class="fas fa-praying-hands text-primary" style="font-size:30px"></i>
+                        <h4 class="mt-2">Doa Bersama</h4>
+                    </div>
                 </div>
             </section>
         </main>
     </div>
 
     <nav class="bottom-nav mobile-only">
-        <button onclick="switchPage('page-home')" class="nav-btn active" id="nav-home-mob">
-            <i class="fas fa-quran"></i><span>Quran</span>
-        </button>
-        <button onclick="switchPage('page-tools')" class="nav-btn" id="nav-tools-mob">
-            <i class="fas fa-compass"></i><span>Alat</span>
-        </button>
+        <button onclick="switchPage('page-home')" class="nav-btn active" id="nav-home-mob"><i class="fas fa-quran"></i><span>Quran</span></button>
+        <button onclick="switchPage('page-tools')" class="nav-btn" id="nav-tools-mob"><i class="fas fa-compass"></i><span>Alat</span></button>
+        <button onclick="switchPage('page-community')" class="nav-btn" id="nav-comm-mob"><i class="fas fa-users"></i><span>Sosial</span></button>
     </nav>
 
-    <div id="modal-calendar" class="modal-overlay">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3>Kalender Hijriah</h3>
-                <i class="fas fa-times" onclick="closeModal('modal-calendar')"></i>
+    <div id="modal-tajwid-info" class="modal-overlay">
+        <div class="modal-box text-center">
+            <div class="icon-circle mx-auto mb-3"><i class="fas fa-info-circle text-primary" style="font-size: 30px;"></i></div>
+            <h3 id="t-info-title" class="text-primary">Hukum Tajwid</h3>
+            <p id="t-info-desc" class="mt-2 text-muted">Penjelasan hukum.</p>
+            <div class="bg-light p-3 border-radius mt-3">
+                <strong id="t-info-letters" style="font-size: 24px;" class="font-arab"></strong>
             </div>
-            <div class="calendar-content">
-                <h2 id="cal-month-year" class="text-center text-primary mb-3">Bulan</h2>
-                <div class="cal-grid" id="cal-grid"></div>
-            </div>
+            <button class="btn-primary w-100 mt-3" onclick="closeModal('modal-tajwid-info')">Paham</button>
         </div>
     </div>
 
     <div id="modal-settings" class="modal-overlay">
         <div class="modal-box">
-            <div class="modal-header">
-                <h3>Pengaturan Tampilan</h3>
-                <i class="fas fa-times" onclick="closeModal('modal-settings')"></i>
+            <div class="flex-between mb-3 border-bottom pb-2">
+                <h3>Pengaturan Membaca</h3>
+                <i class="fas fa-times cursor-pointer text-muted" onclick="closeModal('modal-settings')"></i>
             </div>
             <div class="setting-block">
-                <label>Pilihan Qari (Suara)</label>
-                <select id="qari-selector" onchange="changeQari()">
-                    <option value="05">Syekh Mishary Rasyid Alafasy</option>
-                    <option value="03">Syekh Abdurrahman As-Sudais</option>
+                <label>Qari (Suara Murottal)</label>
+                <select id="qari-selector" class="form-control" onchange="changeQari()">
+                    <option value="05">Mishary Rasyid Alafasy</option>
+                    <option value="03">Abdurrahman As-Sudais</option>
                 </select>
             </div>
-            <div class="setting-block">
-                <label>Ukuran Arab: <span id="val-arab">32px</span></label>
-                <input type="range" min="20" max="60" value="32" oninput="updateFont('arab', this.value)">
-            </div>
-            <div class="setting-block">
-                <label>Ukuran Latin/Terjemah: <span id="val-latin">14px</span></label>
-                <input type="range" min="12" max="24" value="14" oninput="updateFont('latin', this.value)">
-            </div>
+            <div class="setting-block"><label>Ukuran Arab</label><input type="range" min="20" max="60" value="32" oninput="updateFont('arab', this.value)"></div>
+            <div class="setting-block"><label>Ukuran Latin/Terjemah</label><input type="range" min="12" max="24" value="14" oninput="updateFont('latin', this.value)"></div>
             <div class="setting-toggles">
-                <label class="toggle-row"><span>Tajwid Berwarna</span><input type="checkbox" id="toggle-tajwid" checked onchange="toggleFeature()"></label>
+                <label class="toggle-row"><span>Tajwid Berwarna (Bisa Diklik)</span><input type="checkbox" id="toggle-tajwid" checked onchange="toggleFeature()"></label>
                 <label class="toggle-row"><span>Tampilkan Latin</span><input type="checkbox" id="toggle-latin" checked onchange="toggleFeature()"></label>
                 <label class="toggle-row"><span>Tampilkan Terjemahan</span><input type="checkbox" id="toggle-trans" checked onchange="toggleFeature()"></label>
             </div>
