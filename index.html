@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rifqy Al-Quran - Emerald Edition</title>
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="top-header">
+        <div class="brand-logo">
+            <i class="fas fa-book-open"></i> Rifqy Quran
+        </div>
+        <div class="date-container" onclick="openCalendarModal()">
+            <div id="date-gregorian" class="date-greg">Memuat...</div>
+            <div id="date-hijri" class="date-hijri">Memuat... <i class="fas fa-chevron-down" style="font-size: 10px;"></i></div>
+        </div>
+        <button class="btn-icon" onclick="openSettingsModal()"><i class="fas fa-sliders-h"></i></button>
+    </header>
+
+    <main id="app-main">
+        <section id="page-home" class="page active">
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="Cari Surat (misal: Kahfi)..." oninput="filterSurah()">
+            </div>
+            
+            <div id="surah-list" class="surah-grid">
+                <div class="loading-text">Memuat Al-Quran...</div>
+            </div>
+        </section>
+
+        <section id="page-read" class="page">
+            <div class="read-navbar">
+                <button class="btn-back" onclick="goHome()"><i class="fas fa-arrow-left"></i></button>
+                <div class="surah-title-header">
+                    <h2 id="read-surah-name">Nama Surat</h2>
+                    <small id="read-surah-info">Info Surat</small>
+                </div>
+                <button class="btn-icon" onclick="toggleAudioSurah()"><i id="btn-play-surah" class="fas fa-play-circle"></i></button>
+            </div>
+            <div id="ayah-list" class="ayah-container"></div>
+        </section>
+    </main>
+
+    <div id="modal-calendar" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Kalender Hijriah</h3>
+                <i class="fas fa-times" onclick="closeModal('modal-calendar')"></i>
+            </div>
+            <div class="calendar-content">
+                <h2 id="cal-month-year" style="color: var(--primary-color); text-align: center; margin-bottom: 20px;">Bulan</h2>
+                <div class="cal-grid" id="cal-grid">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-settings" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Pengaturan Bacaan</h3>
+                <i class="fas fa-times" onclick="closeModal('modal-settings')"></i>
+            </div>
+            
+            <div class="setting-block">
+                <label>Pilihan Qari (Suara)</label>
+                <select id="qari-selector" onchange="changeQari()">
+                    <option value="05">Syekh Mishary Rasyid Alafasy</option>
+                    <option value="03">Syekh Abdurrahman As-Sudais</option>
+                </select>
+            </div>
+
+            <div class="setting-block">
+                <label>Ukuran Teks Arab: <span id="val-arab">32px</span></label>
+                <input type="range" min="20" max="60" value="32" oninput="updateFont('arab', this.value)">
+            </div>
+
+            <div class="setting-block">
+                <label>Ukuran Teks Latin: <span id="val-latin">14px</span></label>
+                <input type="range" min="12" max="24" value="14" oninput="updateFont('latin', this.value)">
+            </div>
+
+            <div class="setting-block">
+                <label>Ukuran Terjemahan: <span id="val-trans">14px</span></label>
+                <input type="range" min="12" max="24" value="14" oninput="updateFont('trans', this.value)">
+            </div>
+
+            <div class="setting-toggles">
+                <label class="toggle-row">
+                    <span>Tajwid Berwarna</span>
+                    <input type="checkbox" id="toggle-tajwid" checked onchange="toggleFeature()">
+                </label>
+                <label class="toggle-row">
+                    <span>Tampilkan Latin</span>
+                    <input type="checkbox" id="toggle-latin" checked onchange="toggleFeature()">
+                </label>
+                <label class="toggle-row">
+                    <span>Tampilkan Terjemahan</span>
+                    <input type="checkbox" id="toggle-trans" checked onchange="toggleFeature()">
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <audio id="audio-engine"></audio>
+
+    <script src="app.js"></script>
+</body>
+</html>
