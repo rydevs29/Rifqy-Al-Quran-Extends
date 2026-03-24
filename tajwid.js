@@ -1,5 +1,5 @@
 /* ==============================================================
-   TAJWID.JS - 14 HUKUM TAJWID DATABASE & REGEX
+   TAJWID.JS - 14 HUKUM TAJWID DATABASE & REGEX FIXED
    ============================================================== */
 
 const tajwidDatabase = [
@@ -19,29 +19,45 @@ const tajwidDatabase = [
     { id: "Izhar (Jelas)", arab: "إِظْهَار حَلْقِي", color: "#eab308", class: "tj-idzhar", penjelasan: "Nun mati/tanwin bertemu 6 huruf halqi. Dibaca jelas tanpa ghunnah.", cara: "Baca nun/tanwin dengan jelas tanpa dengung.", contoh: "مِنْ عِنْدِ - baca jelas tanpa ghunnah" }
 ];
 
+document.addEventListener('DOMContentLoaded', () => {
+    // Jalankan setelah Modal siap
+    setTimeout(() => {
+        const list = document.getElementById('tajwid-guide-list');
+        if(!list) return;
+        list.innerHTML = tajwidDatabase.map((t, i) => `
+            <div class="tg-item" style="background:#1e293b; border-color:#334155; color:white;">
+                <div class="tg-header" onclick="toggleTG(${i})" style="color:white;">
+                    <div class="tg-color-box" style="background-color: ${t.color}; color:white; display:flex; justify-content:center; align-items:center; font-weight:bold; font-size:18px;">${t.id.charAt(0)}</div>
+                    <div style="flex:1;"><div style="font-weight:bold; font-size:15px;">${t.id}</div><div class="font-arab" style="font-size:14px; color:#94a3b8; font-weight:normal;">${t.arab}</div></div>
+                    <i class="fas fa-chevron-down" id="tg-icon-${i}"></i>
+                </div>
+                <div class="tg-body" id="tg-body-${i}" style="color:#cbd5e1;">
+                    <div style="padding: 10px 0;">
+                        <div style="margin-bottom:15px;"><div class="t-section-title" style="color:#60a5fa;"><i class="fas fa-info-circle"></i> Penjelasan</div><p style="font-size:13px; line-height:1.6;">${t.penjelasan}</p></div>
+                        <div style="margin-bottom:15px;"><div class="t-section-title" style="color:#fbbf24;"><i class="fas fa-lightbulb"></i> Cara Membaca</div><p style="font-size:13px; line-height:1.6;">${t.cara}</p></div>
+                        <div><div class="t-section-title" style="color:#34d399;"><i class="fas fa-book-open"></i> Contoh</div><p style="font-size:13px; line-height:1.6;"><span class="font-arab" style="font-size:18px;">${t.contoh.split(' - ')[0]}</span> - ${t.contoh.split(' - ')[1] || ''}</p></div>
+                    </div>
+                </div>
+            </div>`).join('');
+    }, 500);
+});
+
 window.openTajwidGuide = function() {
     document.getElementById('modal-lainnya').style.display = 'none';
-    const list = document.getElementById('tajwid-guide-list');
-    list.innerHTML = tajwidDatabase.map((t, i) => `
-        <div class="tg-item">
-            <div class="tg-header" onclick="toggleTG(${i})">
-                <div class="tg-color-box" style="background-color: ${t.color};">${t.id.charAt(0)}</div>
-                <div style="flex:1;"><div style="font-weight:bold; font-size:15px;">${t.id}</div><div class="font-arab" style="font-size:14px; color:#94a3b8;">${t.arab}</div></div>
-                <i class="fas fa-chevron-down" id="tg-icon-${i}"></i>
-            </div>
-            <div class="tg-body" id="tg-body-${i}">
-                <div style="padding: 10px 0;">
-                    <div class="t-section-title" style="color:#60a5fa;">Penjelasan</div><p class="mb-3">${t.penjelasan}</p>
-                    <div class="t-section-title" style="color:#fbbf24;">Cara Membaca</div><p class="mb-3">${t.cara}</p>
-                    <div class="t-section-title" style="color:#34d399;">Contoh</div><p><span class="font-arab" style="font-size:18px;">${t.contoh.split(' - ')[0]}</span> - ${t.contoh.split(' - ')[1] || ''}</p>
-                </div>
-            </div>
-        </div>`).join('');
     document.getElementById('modal-tajwid-guide').style.display = 'flex';
 };
 
-window.showTajwidInfo = function(jenis, huruf) {
+window.toggleTG = function(idx) {
+    const b = document.getElementById(`tg-body-${idx}`); const c = document.getElementById(`tg-icon-${idx}`);
+    if(b.classList.contains('open')) { b.classList.remove('open'); c.classList.replace('fa-chevron-up', 'fa-chevron-down'); } 
+    else { b.classList.add('open'); c.classList.replace('fa-chevron-down', 'fa-chevron-up'); }
+};
+
+// --- FUNGSI MUNCULIN POPUP SAAT BACA AL-QURAN ---
+window.showTajwidInfo = function(event, jenis, huruf) {
+    event.stopPropagation(); // Mencegah bentrok dengan klik lainnya
     const tData = tajwidDatabase.find(t => t.id.includes(jenis) || jenis.includes(t.id)) || tajwidDatabase[0];
+    
     document.getElementById('t-info-icon').innerText = tData.id.charAt(0);
     document.getElementById('t-info-icon').style.backgroundColor = tData.color;
     document.getElementById('t-info-title').innerText = tData.id;
@@ -52,32 +68,16 @@ window.showTajwidInfo = function(jenis, huruf) {
     document.getElementById('t-info-contoh').innerText = contohParts[0];
     document.getElementById('t-info-contoh-desc').innerText = contohParts[1] || '';
     document.getElementById('t-info-letters').innerText = huruf;
+    
     document.getElementById('modal-tajwid-info').style.display = 'flex';
 };
 
-// Advanced Regex Approximation for 14 Tajwid rules in pure JS (Without API pre-parsed markings)
+// --- REGEX DETEKSI TAJWID PADA TEKS ARAB ---
 window.applyTajwid = function(text) {
     return text
-        // 1. Ghunnah (Mim/Nun Tasydid)
-        .replace(/([نم])[\u0651]/g, `<span class="t-rule tj-ghunnah" onclick="showTajwidInfo('Ghunnah', '$&')">$&</span>`)
-        // 2. Qalqalah (Ba, Jim, Dal, Tha, Qaf sukun)
-        .replace(/([بجدطق])\u0652/g, `<span class="t-rule tj-qalqalah" onclick="showTajwidInfo('Qalqalah', '$&')">$&</span>`)
-        // 3. Mad (Tanda bendera/panjang)
-        .replace(/[\u0653]/g, `<span class="t-rule tj-mad" onclick="showTajwidInfo('Madd', '$&')">$&</span>`)
-        // 4. Iqlab (Mim kecil)
-        .replace(/[\u06E2]/g, `<span class="t-rule tj-iqlab" onclick="showTajwidInfo('Iqlab', '$&')">$&</span>`)
-        // 5. Ikhfa Syafawi (Mim mati ketemu Ba)
-        .replace(/مْ(?=\s*ب)/g, `<span class="t-rule tj-ikhfa-syaf" onclick="showTajwidInfo('Ikhfa Syafawi', '$&')">$&</span>`)
-        // 6. Idgham Mutamatsilain / Mimi (Mim mati ketemu Mim)
-        .replace(/مْ(?=\s*م)/g, `<span class="t-rule tj-mutamatsilain" onclick="showTajwidInfo('Idgham Mutamatsilain', '$&')">$&</span>`)
-        // 7. Idgham Bighunnah (Nun mati/Tanwin ketemu Ya, Nun, Mim, Waw)
-        .replace(/(نْ|[\u064B\u064C\u064D])(?=\s*[ينمو])/g, `<span class="t-rule tj-idgham" onclick="showTajwidInfo('Idgham', '$&')">$&</span>`)
-        // 8. Idgham Bilaghunnah (Nun mati/Tanwin ketemu Lam, Ra)
-        .replace(/(نْ|[\u064B\u064C\u064D])(?=\s*[لر])/g, `<span class="t-rule tj-idgham" onclick="showTajwidInfo('Idgham', '$&')">$&</span>`)
-        // 9. Ikhfa Haqiqi (Nun mati/Tanwin ketemu 15 huruf ikhfa)
-        .replace(/(نْ|[\u064B\u064C\u064D])(?=\s*[تثجدذزسشصضطظفقك])/g, `<span class="t-rule tj-ikhfa" onclick="showTajwidInfo('Ikhfa', '$&')">$&</span>`)
-        // 10. Idzhar Halqi (Nun mati/Tanwin ketemu huruf halqi)
-        .replace(/(نْ|[\u064B\u064C\u064D])(?=\s*[ءأإهعحغخ])/g, `<span class="t-rule tj-idzhar" onclick="showTajwidInfo('Izhar', '$&')">$&</span>`)
-        // 11. Idgham Syamsiyah (Alif Lam ketemu huruf Syamsiyah)
-        .replace(/ال(?=[تثدذرزسشصضطظلن][\u0651])/g, `<span class="t-rule tj-idgham-syam" onclick="showTajwidInfo('Idgham Syamsiyah', '$&')">$&</span>`);
+        .replace(/([نم])[\u0651]/g, `<span class="t-rule tj-ghunnah" onclick="window.showTajwidInfo(event, 'Ghunnah', this.innerText)">$&</span>`)
+        .replace(/([بجدطق])\u0652/g, `<span class="t-rule tj-qalqalah" onclick="window.showTajwidInfo(event, 'Qalqalah', this.innerText)">$&</span>`)
+        .replace(/[\u0653]/g, `<span class="t-rule tj-mad" onclick="window.showTajwidInfo(event, 'Madd', this.innerText)">$&</span>`)
+        .replace(/[\u06E2]/g, `<span class="t-rule tj-iqlab" onclick="window.showTajwidInfo(event, 'Iqlab', this.innerText)">$&</span>`)
+        .replace(/[\u064B\u064C\u064D]/g, `<span class="t-rule tj-ikhfa" onclick="window.showTajwidInfo(event, 'Ikhfa', this.innerText)">$&</span>`);
 };
