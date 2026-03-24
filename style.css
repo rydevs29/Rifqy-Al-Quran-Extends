@@ -3,7 +3,7 @@
     --primary-color: #0d5c46; --primary-hover: #094031;
     --text-dark: #1f2937; --text-muted: #6b7280; --border-color: #e5e7eb;
     
-    /* 14 Tajweed Colors */
+    /* Tajweed Colors */
     --tj-hamzah: #9ca3af; --tj-idgham-syam: #3b82f6; --tj-ghunnah: #f97316; 
     --tj-ikhfa: #ec4899; --tj-mad: #ef4444; --tj-qalqalah: #10b981; 
     --tj-iqlab: #8b5cf6; --tj-idgham: #06b6d4; --tj-ikhfa-syaf: #d946ef; 
@@ -54,12 +54,7 @@ body { background: var(--bg-main); color: var(--text-dark); transition: backgrou
 .top-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--bg-card); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border-color); }
 .brand-logo { font-size: 18px; font-weight: bold; color: var(--primary-color); display: flex; gap: 8px; align-items: center;}
 
-/* EVENT DOTS (HEADER) */
-.event-dots { display: flex; gap: 4px; }
-.event-dots.justify-center { justify-content: center; }
-.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-
-/* JADWAL SHOLAT UI DIPERKECIL & COMPACT */
+/* JADWAL SHOLAT UI (Diperkecil & Compact) */
 .prayer-times-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
 .prayer-times-grid > div { display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid var(--border-color); padding: 5px 0; border-radius: 8px;}
 .prayer-times-grid small { font-size: 9px; margin-bottom: 2px;}
@@ -74,17 +69,17 @@ body { background: var(--bg-main); color: var(--text-dark); transition: backgrou
 .btn-outline-primary { background: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); padding: 8px 12px; border-radius: 12px; cursor: pointer; font-size: 12px; font-weight: 600; }
 .btn-icon { background: none; border: none; font-size: 20px; color: var(--text-dark); cursor: pointer; padding: 5px 10px; }
 
-/* DASHBOARD GRID 8 SLOT */
+/* GRID 8 SLOT */
 .dashboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 .dash-btn { background: var(--bg-card); border: 1px solid var(--border-color); padding: 15px 5px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s; }
-.dash-btn:active { transform: scale(0.95); } .dash-btn i { font-size: 24px; } .dash-btn span { font-size: 11px; font-weight: 600; color: var(--text-dark); text-align: center; }
+.dash-btn:active { transform: scale(0.95); } .dash-btn i { font-size: 24px; } .dash-btn span { font-size: 11px; font-weight: 600; color: var(--text-dark); text-align: center;}
 
 .search-wrapper { display: flex; align-items: center; background: var(--bg-card); padding: 12px 20px; border-radius: 12px; border: 1px solid var(--border-color); }
 .search-wrapper input { border: none; outline: none; width: 100%; background: transparent; color: var(--text-dark); margin-left: 10px; }
 .surah-grid { display: grid; gap: 12px; }
 .surah-card { background: var(--bg-card); padding: 15px; border-radius: 12px; display: flex; align-items: center; border: 1px solid var(--border-color); cursor: pointer; transition: 0.2s; }
 .surah-card:active { transform: scale(0.98); background: var(--bg-light); }
-.s-num { width: 35px; height: 35px; background: rgba(0,168,107,0.1); color: var(--primary-color); display: flex; justify-content: center; align-items: center; border-radius: 50%; font-weight: bold; margin-right: 15px; flex-shrink: 0;}
+.s-num { width: 35px; height: 35px; background: rgba(0,168,107,0.1); color: var(--primary-color); display: flex; justify-content: center; align-items: center; border-radius: 50%; font-weight: bold; margin-right: 15px; flex-shrink:0;}
 .surah-progress-container { width: 100%; height: 4px; background: var(--border-color); border-radius: 2px; margin-top: 8px; overflow: hidden; }
 .surah-progress-fill { height: 100%; background: var(--primary-color); width: 0%; transition: 0.3s; }
 
@@ -95,7 +90,7 @@ body { background: var(--bg-main); color: var(--text-dark); transition: backgrou
 .ayah-item { background: var(--bg-card); padding: 20px; border-radius: 16px; margin-bottom: 15px; border: 1px solid var(--border-color); transition: 0.3s; }
 .ayah-item.playing { border-left: 4px solid var(--primary-color); background: rgba(0, 168, 107, 0.05); }
 
-/* TOOLBAR AYAT LENGKAP */
+/* TOOLBAR AYAT */
 .ayah-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px dashed var(--border-color); }
 .ayah-badge { background: rgba(0,168,107,0.1); color: var(--primary-color); font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: 20px; }
 .ayah-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
@@ -169,10 +164,7 @@ input:checked + .slider { background-color: var(--primary-color); } input:checke
 .doa-body { padding: 0 15px; max-height: 0; overflow: hidden; transition: 0.3s; }
 .doa-body.open { max-height: 500px; padding: 15px; border-top: 1px solid var(--border-color); }
 
-/* BOOKMARK GROUPS */
-.folder-card { background: var(--bg-light); border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; gap: 15px; }
-
-/* TAJWID RULES IN TEXT - PASTIKAN BISA DIKLIK */
+/* TAJWID RULES IN TEXT */
 .t-rule { cursor: pointer; border-bottom: 1px dashed rgba(0,0,0,0.3); transition: 0.2s; position: relative; z-index: 10; } 
 .t-rule:active { background: rgba(0,0,0,0.1); border-radius: 4px; }
 .tj-hamzah { color: var(--tj-hamzah); } .tj-idgham-syam { color: var(--tj-idgham-syam); } .tj-ghunnah { color: var(--tj-ghunnah); } .tj-ikhfa { color: var(--tj-ikhfa); } .tj-mad { color: var(--tj-mad); } .tj-qalqalah { color: var(--tj-qalqalah); } .tj-iqlab { color: var(--tj-iqlab); } .tj-idgham { color: var(--tj-idgham); } .tj-ikhfa-syaf { color: var(--tj-ikhfa-syaf); } .tj-idzhar { color: var(--tj-idzhar); } .tj-saktah { color: var(--tj-saktah); } .tj-mutamatsilain { color: var(--tj-mutamatsilain); } .tj-mutaqaribain { color: var(--tj-mutaqaribain); } .tj-mutajanisain { color: var(--tj-mutajanisain); }
