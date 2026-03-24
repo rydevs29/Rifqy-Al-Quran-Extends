@@ -1,26 +1,29 @@
 /* ==============================================================
-   PREMIUM.JS - TAFSIR KEMENAG, RECORD, DAN MEDIA SESSION
+   PREMIUM.JS - TAFSIR KEMENAG, WAQAF GUIDE, DAN MEDIA SESSION
    ============================================================== */
 
-window.isRecording = false;
-
-window.toggleRecord = async function(ayahIndex) {
-    const btn = document.getElementById(`btn-record-${ayahIndex}`); const audioPlayback = document.getElementById(`audio-user-${ayahIndex}`);
-    if (!window.isRecording) {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); window.mediaRecorder = new MediaRecorder(stream);
-            window.mediaRecorder.ondataavailable = e => window.audioChunks.push(e.data);
-            window.mediaRecorder.onstop = () => { audioPlayback.src = URL.createObjectURL(new Blob(window.audioChunks, { type: 'audio/webm' })); audioPlayback.classList.remove('hidden'); window.audioChunks = []; };
-            window.mediaRecorder.start(); window.isRecording = true; btn.classList.add('recording'); alert("Mulai merekam...");
-        } catch (err) { alert("Gagal akses mikrofon."); }
-    } else { window.mediaRecorder.stop(); window.isRecording = false; btn.classList.remove('recording'); alert("Rekaman selesai."); }
-};
-
-window.openWallpaperCreator = function(idx) {
+window.showWaqafGuide = function(idx) {
     if(!window.currentSurah) return;
     const a = window.currentSurah.ayat[idx];
-    document.getElementById('wp-arab').innerText = a.teksArab; document.getElementById('wp-indo').innerText = `"${a.teksIndonesia}"`; document.getElementById('wp-source').innerText = `Q.S ${window.currentSurah.namaLatin} : ${a.nomorAyat}`;
-    window.openModal('modal-wallpaper');
+    let content = `
+        <div class="text-center mb-3">
+            <span class="ayah-badge" style="font-size:16px;">Ayat ke-${a.nomorAyat}</span>
+        </div>
+        <div class="bg-light p-3 border-radius mb-3">
+            <p class="font-bold text-primary mb-2"><i class="fas fa-circle text-success small"></i> Hijau (Aman Berhenti):</p>
+            <p>Berhentilah pada tanda waqaf <b>(م, ط, ج, قلى)</b>. Makna ayat sudah sempurna.</p>
+        </div>
+        <div class="bg-light p-3 border-radius mb-3">
+            <p class="font-bold text-warning mb-2"><i class="fas fa-circle text-warning small"></i> Kuning (Boleh Lanjut/Berhenti):</p>
+            <p>Tanda <b>(صلى, ز, ص)</b>. Boleh berhenti, tapi melanjutkan bacaan (washal) lebih utama.</p>
+        </div>
+        <div class="bg-light p-3 border-radius">
+            <p class="font-bold text-danger mb-2"><i class="fas fa-circle text-danger small"></i> Merah (Dilarang Berhenti):</p>
+            <p>Tanda <b>(لا)</b>. Jangan berhenti di sini karena akan merusak arti. Jika kehabisan napas, berhentilah, lalu <b>ulang kembali (Ibtida')</b> dari kata sebelumnya.</p>
+        </div>
+    `;
+    document.getElementById('waqaf-content').innerHTML = content;
+    window.openModal('modal-waqaf');
 };
 
 window.openTafsirPerAyat = async function(surahNo, ayahNo) {
