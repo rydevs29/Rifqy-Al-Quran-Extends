@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;700&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -180,6 +181,7 @@
             <div class="setting-toggles mt-3">
                 <label class="toggle-row"><span>Autoplay Audio</span><input type="checkbox" id="toggle-autoplay-read" onchange="window.toggleFeature()"></label>
                 <label class="toggle-row"><span>Tajwid Berwarna</span><input type="checkbox" id="toggle-tajwid-read" onchange="window.toggleFeature()"></label>
+                <label class="toggle-row"><span>Tanda Waqaf & Ibtida</span><input type="checkbox" id="toggle-waqaf-read" onchange="window.toggleFeature()"></label>
                 <label class="toggle-row"><span>Tampilkan Latin</span><input type="checkbox" id="toggle-latin-read" onchange="window.toggleFeature()"></label>
                 <label class="toggle-row"><span>Tampilkan Terjemahan</span><input type="checkbox" id="toggle-trans-read" onchange="window.toggleFeature()"></label>
             </div>
@@ -224,18 +226,6 @@
             <div class="tajwid-dark-footer p-3 text-center">
                 <button class="btn-primary w-100" style="background-color: #059669;" onclick="window.closeModal('modal-tajwid-info')">Tutup</button>
             </div>
-        </div>
-    </div>
-
-    <div id="modal-waqaf" class="modal-overlay" style="z-index: 1005;">
-        <div class="modal-box">
-            <div class="flex-between mb-3 border-bottom pb-2">
-                <h3 class="font-bold text-primary"><i class="fas fa-traffic-light"></i> Panduan Waqaf</h3>
-                <i class="fas fa-times cursor-pointer text-muted" onclick="window.closeModal('modal-waqaf')"></i>
-            </div>
-            <div id="waqaf-content" class="text-muted small" style="line-height: 1.6;">
-                </div>
-            <button class="btn-primary w-100 mt-3" onclick="window.closeModal('modal-waqaf')">Mengerti</button>
         </div>
     </div>
 
@@ -285,7 +275,7 @@
                 <p id="wp-indo" class="small opacity-75" style="font-style: italic;"></p>
                 <small class="mt-3 font-bold" id="wp-source"></small>
             </div>
-            <button class="btn-primary w-100" onclick="alert('Gambar disimpan!')"><i class="fas fa-download"></i> Simpan Gambar</button>
+            <button class="btn-primary w-100" onclick="window.downloadWallpaper()"><i class="fas fa-download"></i> Simpan Gambar</button>
             <button class="btn-outline-primary w-100 mt-2" onclick="window.closeModal('modal-wallpaper')">Batal</button>
         </div>
     </div>
