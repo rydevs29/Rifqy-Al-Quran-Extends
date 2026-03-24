@@ -42,18 +42,20 @@
                         <h3 class="text-primary font-bold"><i class="fas fa-clock"></i> Jadwal Sholat</h3>
                         <small id="location-text"><i class="fas fa-map-marker-alt"></i> Jakarta</small>
                     </div>
-                    <div class="prayer-times-grid mt-2" id="prayer-times"></div>
+                    <div class="prayer-times-grid mt-2" id="prayer-times">
+                        <div class="text-center w-100"><i class="fas fa-spinner fa-spin text-primary"></i> Memuat Jadwal...</div>
+                    </div>
                 </div>
 
                 <div class="dashboard-grid mb-3">
-                    <div class="dash-btn" onclick="startCompassReal()"><i class="fas fa-kaaba text-warning"></i><span>Kiblat</span></div>
-                    <div class="dash-btn" onclick="openTrackerModal()"><i class="fas fa-check-square text-success"></i><span>Tracker</span></div>
-                    <div class="dash-btn" onclick="openZakatModal()"><i class="fas fa-calculator text-primary"></i><span>Zakat</span></div>
-                    <div class="dash-btn" onclick="openKhatamPlanner()"><i class="fas fa-bullseye text-danger"></i><span>Planner</span></div>
+                    <div class="dash-btn" onclick="openModal('modal-compass')"><i class="fas fa-kaaba text-warning"></i><span>Kiblat</span></div>
+                    <div class="dash-btn" onclick="openModal('modal-imsakiyah')"><i class="fas fa-bell text-danger"></i><span>Alarm</span></div>
+                    <div class="dash-btn" onclick="openModal('modal-zakat')"><i class="fas fa-calculator text-primary"></i><span>Zakat</span></div>
+                    <div class="dash-btn" onclick="openModal('modal-planner')"><i class="fas fa-bullseye text-danger"></i><span>Planner</span></div>
                     <div class="dash-btn" onclick="startQuiz('tajwid')"><i class="fas fa-brain text-info"></i><span>Kuis</span></div>
                     <div class="dash-btn" onclick="openTasbih()"><i class="fas fa-circle-notch text-primary"></i><span>Tasbih</span></div>
-                    <div class="dash-btn" onclick="openDoaList()"><i class="fas fa-hands text-warning"></i><span>Doa</span></div>
-                    <div class="dash-btn" onclick="openCommunity()"><i class="fas fa-users text-success"></i><span>Sosial</span></div>
+                    <div class="dash-btn" onclick="openModal('modal-doa')"><i class="fas fa-hands text-warning"></i><span>Doa</span></div>
+                    <div class="dash-btn" onclick="openModal('modal-community')"><i class="fas fa-users text-success"></i><span>Sosial</span></div>
                 </div>
 
                 <div id="daily-insight" class="sultan-card mb-3 cursor-pointer" onclick="openSurah(2, 152)">
@@ -85,24 +87,30 @@
             <section id="page-read" class="page">
                 <div class="read-navbar">
                     <button class="btn-back" onclick="switchPage('page-home')"><i class="fas fa-arrow-left"></i></button>
+                    
                     <div class="text-center cursor-pointer" onclick="openTafsirModal()">
                         <h2 id="read-surah-name" class="text-primary m-0 font-bold">Nama <i class="fas fa-info-circle small text-muted"></i></h2>
                         <small id="read-surah-info" class="text-muted">Info Surat</small>
                     </div>
-                    <button class="btn-outline-primary small-btn" onclick="toggleTahfidzMode()" id="btn-tahfidz">
-                        <i class="fas fa-eye-slash"></i> Tahfidz
-                    </button>
+
+                    <div class="flex-between gap-10">
+                        <button class="btn-outline-primary small-btn mr-2" onclick="toggleAutoScroll()">
+                            <i class="fas fa-angle-double-down"></i> <span id="btn-autoscroll-txt">Off</span>
+                        </button>
+                        <button class="btn-outline-primary small-btn" onclick="toggleTahfidzMode()" id="btn-tahfidz">
+                            <i class="fas fa-eye-slash"></i> Hafalan
+                        </button>
+                    </div>
                 </div>
                 
                 <div id="ayah-list" class="ayah-container"></div>
             </section>
-
         </main>
     </div>
 
     <nav class="bottom-nav mobile-only">
         <button onclick="switchPage('page-home')" class="nav-btn active" id="nav-home-mob"><i class="fas fa-quran"></i><span>Beranda</span></button>
-        <button onclick="openSettingsModal()" class="nav-btn"><i class="fas fa-cog"></i><span>Setelan</span></button>
+        <button onclick="openSettingsModal()" class="nav-btn"><i class="fas fa-cog"></i><span>Pengaturan</span></button>
     </nav>
 
     <div id="modal-event" class="modal-overlay">
@@ -137,7 +145,6 @@
                 <h3 class="font-bold">Pengaturan Aplikasi</h3>
                 <i class="fas fa-times cursor-pointer text-muted" onclick="closeModal('modal-settings')"></i>
             </div>
-            
             <div class="setting-block">
                 <label class="font-bold text-primary">Pilihan Qari (Audio)</label>
                 <select id="qari-selector" class="form-control" onchange="changeQari()">
@@ -148,7 +155,6 @@
                     <option selected value="05">Mishary Rashid Alafasy</option>
                 </select>
             </div>
-
             <div class="setting-block">
                 <label class="font-bold text-primary">Gaya Font Arab</label>
                 <select id="font-selector" class="form-control" onchange="changeFontFamily()">
@@ -157,10 +163,8 @@
                     <option value="sans-serif">System Default</option>
                 </select>
             </div>
-            
             <div class="setting-block"><label class="font-bold text-primary">Ukuran Font Arab</label><input type="range" min="20" max="60" value="32" oninput="updateFont('arab', this.value)"></div>
             <div class="setting-block"><label class="font-bold text-primary">Ukuran Font Latin/Terjemah</label><input type="range" min="12" max="24" value="14" oninput="updateFont('latin', this.value)"></div>
-            
             <div class="setting-toggles mt-3">
                 <label class="toggle-row"><span>Autoplay Audio</span><input type="checkbox" id="toggle-autoplay" checked onchange="savePrefs()"></label>
                 <label class="toggle-row"><span>Tajwid Berwarna</span><input type="checkbox" id="toggle-tajwid" checked onchange="toggleFeature()"></label>
@@ -170,8 +174,120 @@
         </div>
     </div>
 
+    <div id="modal-zakat" class="modal-overlay">
+        <div class="modal-box">
+            <div class="flex-between mb-3 border-bottom pb-2">
+                <h3 class="font-bold text-primary"><i class="fas fa-calculator"></i> Kalkulator Zakat</h3>
+                <i class="fas fa-times cursor-pointer text-muted" onclick="closeModal('modal-zakat')"></i>
+            </div>
+            <div class="grid-2">
+                <div><small class="text-muted">Harga Beras/Kg</small><input type="number" id="zakat-beras" value="15000" class="form-control mt-1" oninput="hitungZakat()"></div>
+                <div><small class="text-muted">Total Tabungan</small><input type="number" id="zakat-maal" placeholder="Misal: 50000000" class="form-control mt-1" oninput="hitungZakat()"></div>
+            </div>
+            <div class="bg-light p-3 border-radius mt-3 text-center">
+                <p>Fitrah (1 Jiwa): <strong id="hasil-fitrah" class="text-primary text-lg">Rp 37.500</strong></p>
+                <p class="mt-2">Maal (2.5%): <strong id="hasil-maal" class="text-primary text-lg">Rp 0</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-planner" class="modal-overlay">
+        <div class="modal-box">
+            <div class="flex-between mb-3 border-bottom pb-2">
+                <h3 class="font-bold text-primary"><i class="fas fa-bullseye"></i> Khatam Planner</h3>
+                <i class="fas fa-times cursor-pointer text-muted" onclick="closeModal('modal-planner')"></i>
+            </div>
+            <p class="small text-muted mb-3">Masukkan target hari untuk khatam Al-Quran (604 Halaman).</p>
+            <input type="number" id="target-hari" placeholder="Misal: 30" class="form-control mb-3">
+            <button class="btn-primary w-100 font-bold" onclick="hitungKhatam()">Hitung Target</button>
+            <div id="hasil-khatam" class="mt-3 p-3 bg-light border-radius font-bold text-primary hidden text-center"></div>
+        </div>
+    </div>
+
+    <div id="modal-compass" class="modal-overlay">
+        <div class="modal-box text-center">
+            <div class="flex-between mb-3 border-bottom pb-2 text-left">
+                <h3 class="font-bold text-primary"><i class="fas fa-kaaba"></i> Kompas Kiblat</h3>
+                <i class="fas fa-times cursor-pointer text-muted" onclick="closeModal('modal-compass')"></i>
+            </div>
+            <p class="small text-muted mb-3">Putar HP Anda untuk menemukan arah Kiblat.</p>
+            <div id="compass-ring" style="width: 150px; height: 150px; border: 4px solid var(--primary-color); border-radius: 50%; margin: 20px auto; display: flex; align-items: center; justify-content: center; transition: 0.1s;">
+                <i class="fas fa-location-arrow text-primary" style="font-size: 50px;"></i>
+            </div>
+            <p id="compass-status" class="text-muted mt-3 font-bold">Menunggu Sensor...</p>
+            <button class="btn-primary w-100 mt-3" onclick="startCompassReal()">Aktifkan Kompas</button>
+        </div>
+    </div>
+
+    <div id="modal-imsakiyah" class="modal-overlay">
+        <div class="modal-box">
+            <div class="flex-between mb-3 border-bottom pb-2">
+                <h3 class="font-bold text-primary"><i class="fas fa-bell"></i> Imsakiyah & Alarm</h3>
+                <i class="fas fa-times cursor-pointer text-muted" onclick="closeModal('modal-imsakiyah')"></i>
+            </div>
+            <div class="flex-between bg-light p-3 border-radius mb-3">
+                <span class="font-bold">Aktifkan Alarm Adzan</span>
+                <label class="switch"><input type="checkbox" id="alarm-toggle" onchange="toggleAlarm()"><span class="slider"></span></label>
+            </div>
+            <p class="small text-muted mb-2 text-center">Jadwal Imsakiyah Wilayah Anda</p>
+            <div class="prayer-times-grid" id="prayer-times-modal"></div>
+        </div>
+    </div>
+
+    <div id="modal-doa" class="modal-overlay">
+        <div class="modal-box">
+            <div class="flex-between mb-3 border-bottom pb-2">
+                <h3 class="font-bold text-primary"><i class="fas fa-hands"></i> Kumpulan Doa</h3>
+                <i class="fas fa-times cursor-pointer text-muted" onclick="closeModal('modal-doa')"></i>
+            </div>
+            <div id="doa-container" style="max-height: 60vh; overflow-y: auto;"></div>
+        </div>
+    </div>
+
+    <div id="modal-community" class="modal-overlay">
+        <div class="modal-box">
+            <div class="flex-between mb-3 border-bottom pb-2">
+                <h3 class="font-bold text-primary"><i class="fas fa-users"></i> Komunitas & Sosial</h3>
+                <i class="fas fa-times cursor-pointer text-muted" onclick="closeModal('modal-community')"></i>
+            </div>
+            <div class="bg-primary text-white p-3 border-radius mb-3 text-center">
+                <p class="font-bold">Target Khatam Grup</p>
+                <div class="surah-progress-container mt-2 mb-2 bg-light"><div class="surah-progress-fill" style="width: 45%; background: var(--text-warning);"></div></div>
+                <small>13 Juz / 30 Juz (Selesai 45%)</small>
+            </div>
+            <button class="btn-outline-primary w-100 mb-2" onclick="alert('Membuka Papan Doa Bersama...')"><i class="fas fa-praying-hands"></i> Papan Doa Bersama</button>
+        </div>
+    </div>
+
+    <div id="modal-tajwid-info" class="modal-overlay">
+        <div class="modal-box text-center">
+            <div class="icon-circle mx-auto mb-3" style="width:60px; height:60px; font-size:30px;"><i class="fas fa-info-circle text-primary"></i></div>
+            <h3 id="t-info-title" class="text-primary font-bold">Hukum Tajwid</h3>
+            <p id="t-info-desc" class="mt-2 text-muted">Penjelasan hukum.</p>
+            <div class="bg-light p-3 border-radius mt-3">
+                <strong id="t-info-letters" style="font-size: 30px; color:var(--primary-color);" class="font-arab"></strong>
+            </div>
+            <button class="btn-primary w-100 mt-3" onclick="closeModal('modal-tajwid-info')">Paham</button>
+        </div>
+    </div>
+
+    <div id="modal-tafsir" class="modal-overlay">
+        <div class="modal-box tafsir-box">
+            <div class="flex-between mb-3 border-bottom pb-2">
+                <h3 class="text-primary font-bold"><i class="fas fa-book-open"></i> Tafsir / Info</h3>
+                <i class="fas fa-times cursor-pointer text-muted" onclick="closeModal('modal-tafsir')"></i>
+            </div>
+            <div id="tafsir-content" class="text-muted" style="line-height: 1.6; max-height: 60vh; overflow-y: auto;">
+                Memuat penjelasan...
+            </div>
+        </div>
+    </div>
+
     <audio id="audio-engine"></audio>
+    <audio id="audio-adzan" src="https://equran.nos.wjv-1.neo.id/audio-partial/Mishary-Rashid-Al-Afasy/001001.mp3"></audio>
+
     <script src="app.js"></script>
     <script src="sultan.js"></script>
-    <script src="premium.js"></script> </body>
+    <script src="premium.js"></script>
+</body>
 </html>
