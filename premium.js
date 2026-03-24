@@ -1,5 +1,5 @@
 /* ==============================================================
-   PREMIUM.JS - WALLPAPER & RECORDER
+   PREMIUM.JS - TAFSIR KEMENAG, RECORD, DAN MEDIA SESSION
    ============================================================== */
 
 window.isRecording = false;
@@ -21,6 +21,18 @@ window.openWallpaperCreator = function(idx) {
     const a = window.currentSurah.ayat[idx];
     document.getElementById('wp-arab').innerText = a.teksArab; document.getElementById('wp-indo').innerText = `"${a.teksIndonesia}"`; document.getElementById('wp-source').innerText = `Q.S ${window.currentSurah.namaLatin} : ${a.nomorAyat}`;
     window.openModal('modal-wallpaper');
+};
+
+// --- FIX TAFSIR KEMENAG (BUG BUKU) ---
+window.openTafsirPerAyat = async function(surahNo, ayahNo) {
+    document.getElementById('tafsir-content').innerHTML = `<div class="text-center"><i class="fas fa-circle-notch fa-spin text-primary" style="font-size:30px;"></i><p class="mt-2">Mengambil Tafsir...</p></div>`;
+    window.openModal('modal-tafsir');
+    try {
+        const res = await fetch(`https://equran.id/api/v2/tafsir/${surahNo}`); 
+        const data = await res.json();
+        const tafsirTeks = data.data.tafsir.find(t => t.ayat == ayahNo).teks;
+        document.getElementById('tafsir-content').innerHTML = `<h4 class="text-primary mb-2 font-bold">Tafsir Kemenag (Ayat ${ayahNo})</h4><p style="text-align: justify; font-size:14px; line-height:1.7;">${tafsirTeks}</p>`;
+    } catch(e) { document.getElementById('tafsir-content').innerHTML = `<p class="text-danger font-bold text-center">Gagal memuat tafsir. Periksa koneksi.</p>`; }
 };
 
 // --- MEDIA SESSION (NOTIFIKASI BACKGROUND PLAYER) ---
