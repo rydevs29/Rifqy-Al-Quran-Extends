@@ -1,10 +1,12 @@
 /* ==============================================================
-   APP.JS - CORE ENGINE (WAQAF & IBTIDA MANUAL)
+   APP.JS - CORE ENGINE (5 IKON SAJA, WAQAF/TAJWID DEFAULT OFF)
    ============================================================== */
 
 window.API_QURAN = "https://equran.id/api/v2";
 window.allSurahs = []; window.currentSurah = null; window.audioEngine = document.getElementById('audio-engine'); window.activeAyahIndex = -1;
-window.prefs = JSON.parse(localStorage.getItem('rPrefs')) || { qari: "05", arabSize: 32, latinSize: 14, showLatin: true, showTrans: true, showTajwid: true, autoplay: true, theme: 'auto' };
+
+// DEFAULT: showTajwid = false, showWaqaf = false
+window.prefs = JSON.parse(localStorage.getItem('rPrefs')) || { qari: "05", arabSize: 32, latinSize: 14, showLatin: true, showTrans: true, showTajwid: false, showWaqaf: false, autoplay: true, theme: 'auto' };
 window.bookmarksArr = JSON.parse(localStorage.getItem('rBookmarksArr')) || [];
 window.autoScrollInterval = null; window.scrollSpeed = 0;
 
@@ -37,7 +39,6 @@ window.fixDateDisplay = function() {
     const today = new Date();
     const gregStr = today.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
     if(document.getElementById('header-date')) document.getElementById('header-date').innerText = gregStr;
-    if(document.getElementById('date-greg')) document.getElementById('date-greg').innerText = gregStr;
 };
 
 window.switchPage = function(pageId) {
@@ -108,6 +109,12 @@ window.openSurah = async function(nomor, targetAyah = 1) {
         
         html += window.currentSurah.ayat.map((a, i) => {
             const isMarked = window.bookmarksArr.some(b => b.sNo === window.currentSurah.nomor && b.aNo === a.nomorAyat);
+            
+            // Render Text dengan Tajwid dan Waqaf Sesuai Pengaturan
+            let textArabTampil = a.teksArab;
+            if(window.prefs.showTajwid && window.applyTajwid) textArabTampil = window.applyTajwid(textArabTampil);
+            if(window.prefs.showWaqaf && window.applyWaqaf) textArabTampil = window.applyWaqaf(textArabTampil);
+
             return `
             <div class="ayah-item" id="ayah-${i}">
                 <div class="ayah-toolbar">
@@ -116,14 +123,11 @@ window.openSurah = async function(nomor, targetAyah = 1) {
                         <button class="btn-ayah-action" onclick="window.playAyah(${i})"><i class="fas fa-play" id="icon-play-${i}"></i></button>
                         <button class="btn-ayah-action btn-bookmark ${isMarked ? 'active' : ''}" onclick="window.bookmarkAyah(${i}, this)"><i class="fas fa-bookmark"></i></button>
                         <button class="btn-ayah-action text-info" onclick="window.openTafsirPerAyat(${window.currentSurah.nomor}, ${a.nomorAyat})"><i class="fas fa-book-open"></i></button>
-                        
-                        <button class="btn-ayah-action text-warning" title="Waqaf & Ibtida" onclick="window.showWaqafGuide(${i})"><i class="fas fa-traffic-light"></i></button>
-                        
                         <button class="btn-ayah-action text-success" onclick="window.openWallpaperCreator(${i})"><i class="fas fa-paint-brush"></i></button>
                         <button class="btn-ayah-action" onclick="window.shareAyah(${i})"><i class="fas fa-share-alt"></i></button>
                     </div>
                 </div>
-                <div class="text-arab font-arab" style="font-size:${window.prefs.arabSize}px;">${window.prefs.showTajwid && window.applyTajwid ? window.applyTajwid(a.teksArab) : a.teksArab}</div>
+                <div class="text-arab font-arab" style="font-size:${window.prefs.arabSize}px;">${textArabTampil}</div>
                 <div class="box-latin ${window.prefs.showLatin?'':'hidden'}"><div class="text-latin" style="font-size:${window.prefs.latinSize}px;">${a.teksLatin}</div></div>
                 <div class="box-trans ${window.prefs.showTrans?'':'hidden'}"><div class="text-trans" style="font-size:${window.prefs.latinSize}px;">${a.teksIndonesia}</div></div>
             </div>`;
@@ -235,7 +239,7 @@ window.openWallpaperCreator = function(idx) {
     window.openModal('modal-wallpaper');
 };
 
-// --- SETTINGS (Qari Sync, Checkbox Sync) ---
+// --- SETTINGS ---
 window.changeQari = function() { 
     window.prefs.qari = document.getElementById('read-qari-selector').value; 
     window.savePrefs(); window.loadPrefsUI();
@@ -256,12 +260,24 @@ window.toggleFeature = function() {
         window.prefs.showLatin = document.getElementById('toggle-latin-read').checked;
         window.prefs.showTrans = document.getElementById('toggle-trans-read').checked;
         window.prefs.showTajwid = document.getElementById('toggle-tajwid-read').checked;
+        window.prefs.showWaqaf = document.getElementById('toggle-waqaf-read').checked;
         window.prefs.autoplay = document.getElementById('toggle-autoplay-read').checked;
     }
     window.savePrefs();
     document.querySelectorAll('.box-latin').forEach(e => e.classList.toggle('hidden', !window.prefs.showLatin)); 
     document.querySelectorAll('.box-trans').forEach(e => e.classList.toggle('hidden', !window.prefs.showTrans));
-    if(window.currentSurah) { window.currentSurah.ayat.forEach((a, i) => { const el = document.querySelector(`#ayah-${i} .text-arab`); if(el) el.innerHTML = window.prefs.showTajwid && window.applyTajwid ? window.applyTajwid(a.teksArab) : a.teksArab; }); }
+    
+    if(window.currentSurah) { 
+        window.currentSurah.ayat.forEach((a, i) => { 
+            const el = document.querySelector(`#ayah-${i} .text-arab`); 
+            if(el) {
+                let txt = a.teksArab;
+                if(window.prefs.showTajwid && window.applyTajwid) txt = window.applyTajwid(txt);
+                if(window.prefs.showWaqaf && window.applyWaqaf) txt = window.applyWaqaf(txt);
+                el.innerHTML = txt;
+            }
+        }); 
+    }
 };
 window.savePrefs = function() { localStorage.setItem('rPrefs', JSON.stringify(window.prefs)); };
 window.loadPrefsUI = function() {
@@ -269,9 +285,11 @@ window.loadPrefsUI = function() {
     if(document.getElementById('theme-selector')) document.getElementById('theme-selector').value = window.prefs.theme;
     document.querySelectorAll('.range-arab').forEach(el => el.value = window.prefs.arabSize);
     document.querySelectorAll('.range-latin').forEach(el => el.value = window.prefs.latinSize);
+    
     if(document.getElementById('toggle-latin-read')) document.getElementById('toggle-latin-read').checked = window.prefs.showLatin;
     if(document.getElementById('toggle-trans-read')) document.getElementById('toggle-trans-read').checked = window.prefs.showTrans;
     if(document.getElementById('toggle-tajwid-read')) document.getElementById('toggle-tajwid-read').checked = window.prefs.showTajwid;
+    if(document.getElementById('toggle-waqaf-read')) document.getElementById('toggle-waqaf-read').checked = window.prefs.showWaqaf;
     if(document.getElementById('toggle-autoplay-read')) document.getElementById('toggle-autoplay-read').checked = window.prefs.autoplay;
 };
 
@@ -290,7 +308,6 @@ window.clearBookmarks = function() {
     }
 };
 
-// --- JADWAL SHOLAT (ANTI-ERROR FALLBACK) ---
 window.getLocationAndPrayerTimes = function() {
     const container = document.getElementById('prayer-times');
     if(!container) return;
@@ -354,7 +371,6 @@ window.startPrayerCountdown = function(timings) {
     }, 1000);
 };
 
-// --- MODALS & TOOLS ---
 window.openModal = function(id) { const m = document.getElementById(id); if(m) m.style.display = 'flex'; };
 window.closeModal = function(id) { const m = document.getElementById(id); if(m) m.style.display = 'none'; };
 
