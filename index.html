@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rifqy Al-Quran - Ultimate Premium</title>
+    <title>Rifqy Al-Quran - Ultimate Fixed</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;700&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -26,25 +26,20 @@
                 <div class="brand-logo mobile-only"><i class="fas fa-book-open"></i> Rifqy Quran</div>
                 <div class="header-right text-right">
                     <div id="header-hijri" class="font-bold text-primary small">Memuat Hijriah...</div>
-                    <div id="header-countdown" class="small font-bold text-muted mt-1"><i class="fas fa-clock"></i> Menuju Sholat: --:--:--</div>
+                    <div id="header-countdown" class="small font-bold text-muted mt-1">Menuju Sholat: --:--:--</div>
                 </div>
             </header>
 
             <section id="page-home" class="page active">
                 
-                <div class="date-banner text-center cursor-pointer mb-3" onclick="switchPage('page-explore')">
-                    <div id="date-greg" class="small text-muted">Memuat Tanggal...</div>
-                    <div class="event-dots mt-2 justify-center">
-                        <span class="dot bg-success"></span>
-                        <span class="dot bg-warning"></span>
-                        <span class="dot bg-info"></span>
-                    </div>
+                <div class="date-banner text-center mb-3">
+                    <div id="date-greg" class="text-muted font-bold">Memuat Tanggal...</div>
                 </div>
 
-                <div class="tool-card mb-3 border-primary">
-                    <div class="flex-between mb-3">
-                        <h3 class="text-primary font-bold"><i class="fas fa-clock"></i> Jadwal Sholat</h3>
-                        <small id="location-text" class="text-muted bg-light p-1 border-radius"><i class="fas fa-map-marker-alt"></i> Jakarta</small>
+                <div class="tool-card mb-3 border-primary" style="padding: 15px;">
+                    <div class="flex-between mb-2">
+                        <h3 class="text-primary font-bold" style="font-size: 16px;"><i class="fas fa-clock"></i> Jadwal Sholat</h3>
+                        <small id="location-text" class="text-muted"><i class="fas fa-map-marker-alt"></i> Jakarta</small>
                     </div>
                     <div class="prayer-times-grid" id="prayer-times">
                         <div class="text-center w-100"><i class="fas fa-spinner fa-spin text-primary"></i> Memuat Jadwal...</div>
@@ -60,6 +55,17 @@
                     <div class="dash-btn" onclick="openModal('modal-doa')"><i class="fas fa-hands text-warning"></i><span>Doa</span></div>
                 </div>
 
+                <div id="continue-reading-card" class="tool-card bg-primary text-white hidden mb-3 cursor-pointer" onclick="continueReading()">
+                    <div class="flex-between">
+                        <div>
+                            <small class="opacity-75">Terakhir Baca</small>
+                            <h2 class="mt-1 mb-1" id="cr-surah">Al-Fatihah</h2>
+                            <p class="small" id="cr-ayah">Ayat No: 1</p>
+                        </div>
+                        <div class="icon-circle-light"><i class="fas fa-book-reader"></i></div>
+                    </div>
+                </div>
+
                 <div class="search-wrapper mb-3">
                     <i class="fas fa-search text-muted"></i>
                     <input type="text" id="search-input" placeholder="Cari Nama atau Nomor Surat..." oninput="filterSurah()">
@@ -71,27 +77,20 @@
 
             <section id="page-bookmarks" class="page">
                 <h2 class="font-bold text-primary mb-3"><i class="fas fa-bookmark"></i> Ayat Tersimpan</h2>
-                <p class="small text-muted mb-3">Daftar ayat yang kamu tandai (Maksimal 100). Klik untuk melanjutkan membaca.</p>
+                <p class="small text-muted mb-3">Daftar ayat yang ditandai. Klik untuk melanjutkan membaca.</p>
                 <div id="bookmark-list" class="surah-grid"></div>
             </section>
 
             <section id="page-explore" class="page">
-                <h2 class="font-bold text-primary mb-3"><i class="fas fa-calendar-alt"></i> Kalender & Masjid</h2>
-                
+                <h2 class="font-bold text-primary mb-3"><i class="fas fa-calendar-alt"></i> Kalender & Eksplor</h2>
                 <div class="tool-card mb-4">
                     <h4 class="font-bold text-primary mb-3 text-center" id="cal-month-year">Bulan Hijriah</h4>
                     <div class="cal-grid mb-3" id="cal-grid"></div>
-                    <div class="bg-light p-3 border-radius text-left">
-                        <p class="small mb-1"><span class="dot bg-success"></span> Puasa Sunnah (Senin/Kamis)</p>
-                        <p class="small mb-1"><span class="dot bg-warning"></span> Ayyamul Bidh</p>
-                        <p class="small"><span class="dot bg-info"></span> Peringatan Islam</p>
-                    </div>
                 </div>
-
                 <div class="tool-card text-center cursor-pointer" onclick="findNearbyMosque()">
                     <i class="fas fa-mosque text-primary" style="font-size: 40px;"></i>
                     <h3 class="font-bold mt-2">Masjid Terdekat</h3>
-                    <p class="small text-muted mt-1">Temukan masjid di sekitar Anda menggunakan Google Maps.</p>
+                    <p class="small text-muted mt-1">Cari via Google Maps.</p>
                     <button class="btn-primary mt-3 w-100">Cari Masjid</button>
                 </div>
             </section>
@@ -100,7 +99,6 @@
                 <h2 class="font-bold text-primary mb-3"><i class="fas fa-cog"></i> Pengaturan Aplikasi</h2>
                 
                 <div class="tool-card mb-3">
-                    <h4 class="font-bold mb-3 border-bottom pb-2"><i class="fas fa-palette"></i> Tampilan</h4>
                     <div class="flex-between mb-3">
                         <span class="font-bold small">Mode Gelap/Terang</span>
                         <select id="theme-selector" class="form-control" style="width: auto;" onchange="changeTheme()">
@@ -112,11 +110,10 @@
                 </div>
 
                 <div class="tool-card mb-3">
-                    <h4 class="font-bold mb-3 border-bottom pb-2"><i class="fas fa-quran"></i> Membaca Quran</h4>
                     <div class="setting-block">
                         <label class="font-bold text-muted small">Pilihan Qari (Audio)</label>
-                        <select id="qari-selector" class="form-control" onchange="savePrefs()">
-                            <option value="01" selected>Mahmoud Khalil Al-Husary</option>
+                        <select id="qari-selector" class="form-control" onchange="changeQari('global')">
+                            <option value="01">Mahmoud Khalil Al-Husary</option>
                             <option value="02">Abdul Muhsir Al-Qasim</option>
                             <option value="03">Abdurrahman As-Sudais</option>
                             <option value="04">Ibrahim Al-Dawsari</option>
@@ -132,16 +129,9 @@
                     </div>
                     <div class="setting-block"><label class="font-bold text-muted small">Ukuran Font Arab</label><input type="range" min="20" max="60" value="32" oninput="updateFont('arab', this.value)"></div>
                     <div class="setting-block"><label class="font-bold text-muted small">Ukuran Latin/Terjemah</label><input type="range" min="12" max="24" value="14" oninput="updateFont('latin', this.value)"></div>
-                    
-                    <div class="setting-toggles mt-3">
-                        <label class="toggle-row"><span>Autoplay Audio</span><input type="checkbox" id="toggle-autoplay" checked onchange="savePrefs()"></label>
-                        <label class="toggle-row"><span>Tajwid Berwarna</span><input type="checkbox" id="toggle-tajwid" checked onchange="toggleFeature()"></label>
-                        <label class="toggle-row"><span>Tampilkan Latin</span><input type="checkbox" id="toggle-latin" checked onchange="toggleFeature()"></label>
-                        <label class="toggle-row"><span>Tampilkan Terjemahan</span><input type="checkbox" id="toggle-trans" checked onchange="toggleFeature()"></label>
-                    </div>
                 </div>
 
-                <button class="btn-primary w-100 font-bold p-3" onclick="openTajwidGuide()"><i class="fas fa-book-open"></i> Panduan Tata Cara Tajwid</button>
+                <button class="btn-primary w-100 font-bold p-3" onclick="openModal('modal-tajwid-guide')"><i class="fas fa-book-open"></i> Panduan Tajwid Lengkap</button>
             </section>
 
             <section id="page-read" class="page">
@@ -154,8 +144,9 @@
                     </div>
 
                     <div class="flex-between gap-10">
-                        <button class="btn-outline-primary small-btn mr-2" onclick="toggleAutoScroll()"><i class="fas fa-angle-double-down"></i> <span id="btn-autoscroll-txt">Off</span></button>
+                        <button class="btn-outline-primary small-btn" onclick="toggleAutoScroll()"><i class="fas fa-angle-double-down"></i> <span id="btn-autoscroll-txt">Off</span></button>
                         <button class="btn-outline-primary small-btn" onclick="toggleTahfidzMode()" id="btn-tahfidz"><i class="fas fa-eye-slash"></i> Hafalan</button>
+                        <button class="btn-icon" onclick="openModal('modal-read-settings')" style="padding: 5px;"><i class="fas fa-ellipsis-v"></i></button>
                     </div>
                 </div>
                 <div id="ayah-list" class="ayah-container"></div>
@@ -168,8 +159,33 @@
         <button onclick="switchPage('page-home')" class="nav-btn active" id="nav-home-mob"><i class="fas fa-quran"></i><span>Beranda</span></button>
         <button onclick="switchPage('page-bookmarks')" class="nav-btn" id="nav-bm-mob"><i class="fas fa-bookmark"></i><span>Tersimpan</span></button>
         <button onclick="switchPage('page-explore')" class="nav-btn" id="nav-exp-mob"><i class="fas fa-mosque"></i><span>Eksplor</span></button>
-        <button onclick="switchPage('page-settings')" class="nav-btn" id="nav-set-mob"><i class="fas fa-cog"></i><span>Pengaturan</span></button>
+        <button onclick="switchPage('page-settings')" class="nav-btn" id="nav-set-mob"><i class="fas fa-cog"></i><span>Lainnya</span></button>
     </nav>
+
+    <div id="modal-read-settings" class="modal-overlay" style="z-index: 1005;">
+        <div class="modal-box">
+            <div class="flex-between mb-3 border-bottom pb-2">
+                <h3 class="font-bold text-primary"><i class="fas fa-sliders-h"></i> Opsi Bacaan</h3>
+                <i class="fas fa-times cursor-pointer text-muted" onclick="closeModal('modal-read-settings')"></i>
+            </div>
+            <div class="setting-block">
+                <label class="font-bold text-muted small">Pilihan Audio Qari</label>
+                <select id="read-qari-selector" class="form-control" onchange="changeQari('read')">
+                    <option value="01">Mahmoud Khalil Al-Husary</option>
+                    <option value="02">Abdul Muhsir Al-Qasim</option>
+                    <option value="03">Abdurrahman As-Sudais</option>
+                    <option value="04">Ibrahim Al-Dawsari</option>
+                    <option value="05">Mishary Rashid Alafasy</option>
+                </select>
+            </div>
+            <div class="setting-toggles mt-3">
+                <label class="toggle-row"><span>Autoplay Audio</span><input type="checkbox" id="toggle-autoplay" checked onchange="toggleFeature()"></label>
+                <label class="toggle-row"><span>Tajwid Berwarna</span><input type="checkbox" id="toggle-tajwid" checked onchange="toggleFeature()"></label>
+                <label class="toggle-row"><span>Tampilkan Latin</span><input type="checkbox" id="toggle-latin" checked onchange="toggleFeature()"></label>
+                <label class="toggle-row"><span>Tampilkan Terjemahan</span><input type="checkbox" id="toggle-trans" checked onchange="toggleFeature()"></label>
+            </div>
+        </div>
+    </div>
 
     <div id="modal-tajwid-guide" class="modal-overlay" style="z-index: 1005;">
         <div class="modal-box tajwid-dark-modal" style="padding: 0; max-height: 95vh; display: flex; flex-direction: column;">
@@ -178,7 +194,7 @@
                 <h3 class="font-bold m-0 text-center" style="flex:1; color:white;">Panduan Tajweed</h3>
             </div>
             <div class="p-3" style="background: #0f172a; color:white; border-bottom: 1px solid #334155;">
-                <p class="small text-center opacity-75">14 HUKUM TAJWEED</p>
+                <p class="small text-center opacity-75">14 HUKUM TAJWEED AL-QURAN</p>
             </div>
             <div id="tajwid-guide-list" style="overflow-y: auto; padding: 15px; flex: 1; background-color: #0f172a;">
                 </div>
@@ -197,14 +213,10 @@
             <div class="p-3" style="background-color: #1e293b; max-height: 60vh; overflow-y: auto;">
                 <div class="t-section-title" style="color:#60a5fa;"><i class="fas fa-info-circle"></i> Penjelasan</div>
                 <p id="t-info-desc" class="t-desc-text"></p>
-
                 <div class="t-section-title" style="color:#fbbf24;"><i class="fas fa-lightbulb"></i> Cara Membaca</div>
                 <p id="t-info-cara" class="t-desc-text"></p>
-
                 <div class="t-section-title" style="color:#34d399;"><i class="fas fa-book-open"></i> Contoh</div>
                 <p id="t-info-contoh" class="t-desc-text" style="font-family: 'Amiri', serif; font-size:18px; direction: rtl; text-align: right;"></p>
-                <p id="t-info-contoh-desc" class="t-desc-text" style="font-style: italic;"></p>
-                
                 <div class="mt-3 p-3 border-radius text-center" style="background-color: #0f172a; border: 1px solid #334155;">
                     <span id="t-info-letters" class="font-arab font-bold" style="font-size:32px; color:white;"></span>
                 </div>
@@ -228,8 +240,8 @@
     <div id="modal-compass" class="modal-overlay">
         <div class="modal-box text-center">
             <h3 class="font-bold text-primary mb-3"><i class="fas fa-kaaba"></i> Kompas Kiblat</h3>
-            <div id="compass-ring" style="width: 150px; height: 150px; border: 4px solid var(--primary-color); border-radius: 50%; margin: 20px auto; display: flex; align-items: center; justify-content: center; transition: 0.1s;">
-                <i class="fas fa-location-arrow text-primary" style="font-size: 50px;"></i>
+            <div id="compass-ring" style="width: 120px; height: 120px; border: 4px solid var(--primary-color); border-radius: 50%; margin: 20px auto; display: flex; align-items: center; justify-content: center; transition: 0.1s;">
+                <i class="fas fa-location-arrow text-primary" style="font-size: 40px;"></i>
             </div>
             <button class="btn-primary w-100 mt-3" onclick="startCompassReal()">Aktifkan Kompas</button>
             <button class="btn-outline-primary w-100 mt-2" onclick="closeModal('modal-compass')">Tutup</button>
@@ -257,7 +269,17 @@
 
     <div id="modal-doa" class="modal-overlay"><div class="modal-box"><h3 class="font-bold text-primary mb-3">Kumpulan Doa</h3><div id="doa-container" style="max-height: 60vh; overflow-y: auto;"></div><button class="btn-outline-primary w-100 mt-2" onclick="closeModal('modal-doa')">Tutup</button></div></div>
 
-    <div id="modal-community" class="modal-overlay"><div class="modal-box text-center"><h3 class="font-bold text-primary mb-3">Sosial</h3><p>Fitur papan doa dan komunitas dalam pengembangan.</p><button class="btn-outline-primary w-100 mt-3" onclick="closeModal('modal-community')">Tutup</button></div></div>
+    <div id="modal-wallpaper" class="modal-overlay">
+        <div class="modal-box">
+            <h3 class="text-primary font-bold mb-3"><i class="fas fa-paint-brush"></i> Islamic Wallpaper</h3>
+            <div id="wallpaper-canvas" class="p-3 border-radius text-center mb-3" style="background: linear-gradient(135deg, #0d5c46, #053b29); color: white; min-height: 200px; display: flex; flex-direction: column; justify-content: center;">
+                <h2 id="wp-arab" class="font-arab mb-2" style="font-size: 28px; line-height: 1.8;"></h2>
+                <p id="wp-indo" class="small opacity-75" style="font-style: italic;"></p>
+            </div>
+            <button class="btn-primary w-100" onclick="alert('Gambar disimpan!')"><i class="fas fa-download"></i> Simpan Gambar</button>
+            <button class="btn-outline-primary w-100 mt-2" onclick="closeModal('modal-wallpaper')">Batal</button>
+        </div>
+    </div>
 
     <audio id="audio-engine"></audio>
 
