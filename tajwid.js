@@ -1,5 +1,5 @@
 /* ==============================================================
-   TAJWID.JS V3 - TURBO OPTIMIZED (14 HUKUM LENGKAP & FIXED)
+   TAJWID.JS - 14 HUKUM LENGKAP & AMAN
    ============================================================== */
 
 const tajwidDatabase = [
@@ -55,12 +55,12 @@ window.showTajwidInfo = function(event, jenis, huruf) {
     document.getElementById('modal-tajwid-info').style.display = 'flex';
 };
 
-function renderTajwidGuide() {
+window.renderTajwidGuide = function() {
     const list = document.getElementById('tajwid-guide-list');
     if(!list) return;
     list.innerHTML = tajwidDatabase.map((t, i) => `
         <div class="tg-item">
-            <div class="tg-header" onclick="toggleTG(${i})">
+            <div class="tg-header" onclick="window.toggleTG(${i})">
                 <div class="tg-color-box" style="background-color: ${t.color};">${t.id.charAt(0)}</div>
                 <div style="flex:1;"><div style="font-weight:bold; font-size:15px;">${t.id}</div><div class="font-arab" style="font-size:14px; color:#94a3b8;">${t.arab}</div></div>
                 <i class="fas fa-chevron-down" id="tg-icon-${i}"></i>
@@ -73,7 +73,7 @@ function renderTajwidGuide() {
                 </div>
             </div>
         </div>`).join('');
-}
+};
 
 window.openTajwidGuide = function() {
     document.getElementById('modal-tajwid-guide').style.display = 'flex';
@@ -85,4 +85,4 @@ window.toggleTG = function(idx) {
     else { b.style.maxHeight = '0px'; icon.classList.replace('fa-chevron-up', 'fa-chevron-down'); }
 };
 
-document.addEventListener('DOMContentLoaded', () => { setTimeout(renderTajwidGuide, 500); });
+document.addEventListener('DOMContentLoaded', () => { setTimeout(window.renderTajwidGuide, 500); });
