@@ -79,7 +79,6 @@ window.switchPage = function(pageId) {
 };
 
 window.renderAyatHariIni = function() {
-    // 100 QUOTES INSPIRASI
     const quotes = [
         {a: "لَا يُكَلِّفُ اللّٰهُ نَفْسًا إِلَّا وُسْعَهَا", i: "Allah tidak membebani seseorang melainkan sesuai dengan kesanggupannya.", s: "Al-Baqarah : 286"},
         {a: "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا", i: "Maka sesungguhnya bersama kesulitan ada kemudahan.", s: "Al-Insyirah : 5"},
@@ -186,17 +185,27 @@ window.renderAyatHariIni = function() {
     if(document.getElementById('aotd-arab')) { document.getElementById('aotd-arab').innerText = pick.a; document.getElementById('aotd-indo').innerText = `"${pick.i}"`; document.getElementById('aotd-surah').innerText = pick.s; }
 };
 
-window.fetchSurahs = function() {
+// =======================================================================
+// FIX ERROR ONLINE: SISTEM AUTO-RETRY JIKA quran_data.js LELET DI VERCEL
+// =======================================================================
+window.fetchSurahs = function(retryCount = 0) {
     const list = document.getElementById('surah-list'); if(!list) return;
     try { 
         if (window.OFFLINE_QURAN) {
             window.allSurahs = window.OFFLINE_QURAN.surahs; 
             window.renderSurahs(window.allSurahs); 
         } else {
-            list.innerHTML = `<p class="text-center text-danger font-bold mt-3">File quran_data.js tidak ditemukan! Pastikan sudah di-download.</p>`;
+            if(retryCount < 5) {
+                // Tampilkan loading berputar dan coba lagi tiap 1 detik (Maksimal 5 detik)
+                list.innerHTML = `<div class="text-center w-100 mt-4"><i class="fas fa-circle-notch fa-spin text-primary" style="font-size: 30px;"></i><p class="mt-2 text-muted">Memuat data dari server... (${retryCount + 1}/5)</p></div>`;
+                setTimeout(() => window.fetchSurahs(retryCount + 1), 1000);
+            } else {
+                // Jika sudah 5 detik tapi masih error, berikan peringatan untuk upload file
+                list.innerHTML = `<div class="text-center mt-3"><p class="text-danger font-bold">Gagal memuat quran_data.js!</p><p class="small text-muted">Pastikan kamu sudah meng-upload file <b>quran_data.js</b> ke Vercel/GitHub.</p></div>`;
+            }
         }
     } 
-    catch (e) { list.innerHTML = `<p class="text-center text-danger font-bold mt-3">Gagal memuat Al-Quran.</p>`; }
+    catch (e) { list.innerHTML = `<p class="text-center text-danger font-bold mt-3">Terjadi kesalahan sistem.</p>`; }
 };
 
 window.renderSurahs = function(data) {
