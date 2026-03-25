@@ -1,5 +1,5 @@
 /* ==============================================================
-   PREMIUM.JS - TAFSIR COMPARISON & MEDIA SESSION
+   PREMIUM.JS - WALLPAPER FIX & TAFSIR TABBED
    ============================================================== */
 
 window.openTafsirPerAyat = async function(surahNo, ayahNo) {
@@ -7,7 +7,7 @@ window.openTafsirPerAyat = async function(surahNo, ayahNo) {
     document.getElementById('tafsir-ringkas-content').innerHTML = `<div class="text-center p-4"><i class="fas fa-circle-notch fa-spin text-primary" style="font-size:30px;"></i></div>`;
     
     document.getElementById('tafsir-title-header').innerHTML = `<i class="fas fa-book-open"></i> Tafsir Ayat ${ayahNo}`;
-    window.switchTafsirTab('kemenag'); // Reset ke Tab Pertama
+    window.switchTafsirTab('kemenag'); 
     window.openModal('modal-tafsir');
     
     try {
@@ -15,10 +15,8 @@ window.openTafsirPerAyat = async function(surahNo, ayahNo) {
         const data = await res.json();
         const tafsirTeks = data.data.tafsir.find(t => t.ayat == ayahNo).teks;
         
-        // Tab Kemenag Lengkap
         document.getElementById('tafsir-content').innerHTML = `<p style="text-align: justify; font-size:14px; line-height:1.7;">${tafsirTeks}</p>`;
         
-        // Simulasi Tab Terjemah Ringkas (Mengambil Terjemahan Utama)
         if(window.currentSurah) {
             const terjemah = window.currentSurah.ayat.find(a => a.nomorAyat == ayahNo).teksIndonesia;
             document.getElementById('tafsir-ringkas-content').innerHTML = `<p style="text-align: justify; font-size:15px; font-weight:bold; color: var(--primary-color);">"${terjemah}"</p><p class="small mt-2">Ini adalah terjemahan langsung dari ayat untuk memudahkan pemahaman ringkas.</p>`;
@@ -45,6 +43,29 @@ window.switchTafsirTab = function(tabName) {
     }
 };
 
+// --- FIX WALLPAPER REAL DOWNLOAD ---
+window.downloadWallpaper = function() {
+    const canvasEl = document.getElementById('wallpaper-canvas');
+    const btn = document.getElementById('btn-download-wp');
+    const oldText = btn.innerHTML;
+    
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses Gambar...';
+    
+    html2canvas(canvasEl, { scale: 2, useCORS: true, backgroundColor: null }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `RifqyQuran-Wallpaper.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        
+        btn.innerHTML = oldText;
+        window.closeModal('modal-wallpaper');
+        alert("Wallpaper berhasil diunduh ke galeri!");
+    }).catch(err => {
+        alert("Gagal mengunduh gambar.");
+        btn.innerHTML = oldText;
+    });
+};
+
 // --- MEDIA SESSION ---
 window.initMediaSession = function() {
     if ('mediaSession' in navigator) {
@@ -58,8 +79,8 @@ window.initMediaSession = function() {
 window.updateMediaSession = function(idx) {
     if ('mediaSession' in navigator && window.currentSurah) {
         const qariNames = { 
-            "01": "Mahmoud Khalil Al-Husary", "02": "Abdul Muhsir Al-Qasim", "03": "Abdurrahman As-Sudais", "04": "Ibrahim Al-Dawsari", 
-            "05": "Mishary Rashid Alafasy", "06": "Yasser Al-Dosari", "07": "Saad Al-Ghamdi", "08": "Maher Al-Muaiqly", "09": "Abdullah Al-Matrood"
+            "01": "Mahmoud Khalil Al-Husary", "03": "Abdurrahman As-Sudais", "05": "Mishary Rashid", 
+            "06": "Yasser Al-Dosari", "07": "Saad Al-Ghamdi", "08": "Maher Al-Muaiqly", "09": "Abdullah Al-Matrood"
         };
         const artistName = qariNames[window.prefs.qari] || "Qari Internasional";
         navigator.mediaSession.metadata = new MediaMetadata({
