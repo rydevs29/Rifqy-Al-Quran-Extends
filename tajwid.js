@@ -1,5 +1,5 @@
 /* ==============================================================
-   TAJWID.JS - 14 HUKUM & WAQAF IBTIDA GUIDE
+   TAJWID.JS - 14 HUKUM & WAQAF IBTIDA (NO POPUP CLICK)
    ============================================================== */
 
 const tajwidDatabase = [
@@ -42,12 +42,12 @@ window.applyTajwid = function(text) {
         .replace(new RegExp(`(د[\u0652]?)${space}(?=ت)`, 'g'), `<span class="t-rule tj-mutajanisain" onclick="window.showTajwidInfo(event, 'Idgham Mutajanisain', '$&')">$&</span>`);
 };
 
-// --- FUNGSI TANDA WAQAF (BERHENTI) ---
+// --- FUNGSI TANDA WAQAF (HANYA WARNA, TANPA KLIK) ---
 window.applyWaqaf = function(text) {
     if (!text) return "";
     return text
-        .replace(/([\u06D6\u06D7\u06D8\u06DA\u06DB])/g, `<span style="color:#10b981; font-weight:bold; padding: 0 4px;" title="Aman/Dianjurkan Berhenti">$&</span>`) // Tanda Waqaf Aman (Hijau)
-        .replace(/([\u06D9])/g, `<span style="color:#ef4444; font-weight:bold; padding: 0 4px;" title="Dilarang Berhenti">$&</span>`); // Tanda Waqaf Dilarang (Merah)
+        .replace(/([\u06D6\u06D7\u06D8\u06DA\u06DB])/g, `<span style="color:#10b981; font-weight:bold; padding: 0 4px;" title="Aman/Dianjurkan Berhenti">$&</span>`) 
+        .replace(/([\u06D9])/g, `<span style="color:#ef4444; font-weight:bold; padding: 0 4px;" title="Dilarang Berhenti">$&</span>`); 
 };
 
 window.showTajwidInfo = function(event, jenis, huruf) {
