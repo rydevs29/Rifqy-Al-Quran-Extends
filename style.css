@@ -100,8 +100,8 @@ body.tahfidz-mode .text-arab:hover, body.tahfidz-mode .text-arab:active { color:
 body.tahfidz-mode .box-latin, body.tahfidz-mode .box-trans { display: none !important; }
 
 /* CSS UNTUK HIGHLIGHT PER KATA */
-.q-word { display: inline-block; padding: 0 2px; transition: 0.2s; border-radius: 4px; }
-.q-word.hl-active { background-color: rgba(13, 92, 70, 0.15); color: var(--primary-color); transform: scale(1.05); }
+.q-word { display: inline-block; padding: 0 2px; transition: color 0.1s, background-color 0.1s; border-radius: 4px; }
+.q-word.hl-active { background-color: rgba(13, 92, 70, 0.15); color: var(--primary-color); font-weight: bold; }
 body.dark-mode .q-word.hl-active { background-color: rgba(0, 168, 107, 0.25); color: #00A86B; }
 
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 20px; }
@@ -139,14 +139,10 @@ input:checked + .slider { background-color: var(--primary-color); } input:checke
 .asmaul-item { background: var(--bg-light); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; text-align: center; }
 .tracker-item { display: flex; justify-content: space-between; padding: 12px; background: var(--bg-light); border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 8px; align-items: center; font-weight: bold; }
 .tracker-item input { width: 20px; height: 20px; accent-color: var(--primary-color); cursor: pointer; }
-.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center; }
-.cal-day { padding: 10px; background: var(--bg-main); border-radius: 8px; font-weight: bold; }
-.cal-day.today { background: var(--primary-color); color: white; }
 .doa-item { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
 .doa-header { padding: 15px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
 .doa-body { padding: 0 15px; max-height: 0; overflow: hidden; transition: 0.3s; }
 .folder-card { background: var(--bg-light); border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; gap: 15px; }
 
-.t-rule { cursor: pointer; border-bottom: 1px dashed rgba(0,0,0,0.3); transition: 0.2s; position: relative; z-index: 10; } 
-.t-rule:active { background: rgba(0,0,0,0.1); border-radius: 4px; }
+.t-rule { position: relative; z-index: 10; } 
 .tj-hamzah { color: var(--tj-hamzah); } .tj-idgham-syam { color: var(--tj-idgham-syam); } .tj-ghunnah { color: var(--tj-ghunnah); } .tj-ikhfa { color: var(--tj-ikhfa); } .tj-mad { color: var(--tj-mad); } .tj-qalqalah { color: var(--tj-qalqalah); } .tj-iqlab { color: var(--tj-iqlab); } .tj-idgham { color: var(--tj-idgham); } .tj-ikhfa-syaf { color: var(--tj-ikhfa-syaf); } .tj-idzhar { color: var(--tj-idzhar); } .tj-saktah { color: var(--tj-saktah); } .tj-mutamatsilain { color: var(--tj-mutamatsilain); } .tj-mutaqaribain { color: var(--tj-mutaqaribain); } .tj-mutajanisain { color: var(--tj-mutajanisain); }
