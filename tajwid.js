@@ -1,5 +1,5 @@
 /* ==============================================================
-   TAJWID.JS - 14 HUKUM & WAQAF IBTIDA (DENGAN TOGGLE POPUP)
+   TAJWID.JS - 14 HUKUM & WAQAF IBTIDA
    ============================================================== */
 
 const tajwidDatabase = [
@@ -50,9 +50,15 @@ window.applyWaqaf = function(text) {
         .replace(/([\u06DA])/g, `<span class="t-waqaf" style="color:#f59e0b; font-weight:bold; padding: 0 4px;" onclick="window.showWaqafInfo(event, '$1')">$&</span>`);
 };
 
+window.showWaqafInfo = function(event, charInfo) {
+    if (event) event.stopPropagation();
+    if (!window.prefs.popupWaqaf) return; 
+    window.openModal('modal-waqaf-guide');
+};
+
 window.showTajwidInfo = function(event, jenis, huruf) {
     if (event) event.stopPropagation();
-    if (!window.prefs.popupTajwid) return; // Dicek dari toggle di Pengaturan
+    if (!window.prefs.popupTajwid) return; 
 
     const tData = tajwidDatabase.find(t => t.id === jenis || t.id.includes(jenis)) || tajwidDatabase[0];
     document.getElementById('t-info-icon').innerText = tData.id.charAt(0);
