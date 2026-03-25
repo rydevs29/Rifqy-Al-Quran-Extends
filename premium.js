@@ -1,5 +1,5 @@
 /* ==============================================================
-   PREMIUM.JS - WALLPAPER FIX & TAFSIR TABBED
+   PREMIUM.JS - WALLPAPER FIX DOWNLOAD & TAFSIR
    ============================================================== */
 
 window.openTafsirPerAyat = async function(surahNo, ayahNo) {
@@ -43,30 +43,30 @@ window.switchTafsirTab = function(tabName) {
     }
 };
 
-// --- FIX WALLPAPER REAL DOWNLOAD ---
+// --- FIX WALLPAPER REAL DOWNLOAD (DIJAMIN BISA DIKLIK) ---
 window.downloadWallpaper = function() {
     const canvasEl = document.getElementById('wallpaper-canvas');
     const btn = document.getElementById('btn-download-wp');
     const oldText = btn.innerHTML;
     
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses Gambar...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
     
-    // Memberikan waktu browser untuk render CSS sebelum menangkap layar
+    // Memberikan waktu browser untuk render CSS 0.5 detik sebelum menangkap layar
     setTimeout(() => {
         html2canvas(canvasEl, { scale: 2, useCORS: true, backgroundColor: null }).then(canvas => {
             const link = document.createElement('a');
             link.download = `RifqyQuran-Wallpaper.png`;
             link.href = canvas.toDataURL('image/png');
-            link.click();
+            link.click(); // Memicu download otomatis
             
             btn.innerHTML = oldText;
             window.closeModal('modal-wallpaper');
-            alert("Wallpaper berhasil diunduh ke galeri!");
+            alert("Gambar Wallpaper berhasil diunduh ke galeri!");
         }).catch(err => {
-            alert("Gagal mengunduh gambar.");
+            alert("Gagal mengunduh gambar. Pastikan browser mendukung Canvas.");
             btn.innerHTML = oldText;
         });
-    }, 300);
+    }, 500);
 };
 
 window.initMediaSession = function() {
@@ -92,11 +92,4 @@ window.updateMediaSession = function(idx) {
             artwork: [{ src: 'https://equran.id/favicon.png', sizes: '512x512', type: 'image/png' }]
         });
     }
-};
-
-// Fungsi Helper untuk Popup Tajwid & Waqaf (Diambil dari onclick elemen html)
-window.showWaqafInfo = function(event, charInfo) {
-    if (event) event.stopPropagation();
-    if (!window.prefs.popupWaqaf) return; // Jika toggle mati, tidak terjadi apa-apa
-    window.openModal('modal-waqaf-guide');
 };
