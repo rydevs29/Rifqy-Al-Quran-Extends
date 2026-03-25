@@ -1,10 +1,11 @@
 /* ==============================================================
-   APP.JS - CORE ENGINE (QARI PREMIUM, HIGHLIGHT, & WIDGET)
+   APP.JS - CORE ENGINE (JUMP AYAT, HIGHLIGHT FIX, QUOTES BANYAK)
    ============================================================== */
 
 window.API_QURAN = "https://equran.id/api/v2";
 window.allSurahs = []; window.currentSurah = null; window.audioEngine = document.getElementById('audio-engine'); window.activeAyahIndex = -1;
 
+// Default Tajwid OFF, Waqaf OFF, Highlight OFF. Speed Normal, Timer 0
 window.prefs = JSON.parse(localStorage.getItem('rPrefs')) || { 
     qari: "05", arabSize: 32, latinSize: 14, showLatin: true, showTrans: true, 
     showTajwid: false, showWaqaf: false, autoplay: true, theme: 'auto', 
@@ -12,7 +13,7 @@ window.prefs = JSON.parse(localStorage.getItem('rPrefs')) || {
 };
 window.bookmarksArr = JSON.parse(localStorage.getItem('rBookmarksArr')) || [];
 window.autoScrollInterval = null; window.scrollSpeed = 0;
-window.hlInterval = null; window.sleepTimeout = null;
+window.sleepTimeout = null;
 
 window.safeCall = function(fn) { try { if (typeof window[fn] === 'function') window[fn](); } catch (e) { console.error(`Error in ${fn}:`, e); } };
 
@@ -24,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.safeCall('renderBookmarksPage');
     window.safeCall('checkDirectLink');
     window.safeCall('getLocationAndPrayerTimes');
-    window.safeCall('renderCalGrid');
     window.safeCall('initTracker');
     window.safeCall('initMediaSession');
     window.safeCall('renderAyatHariIni');
@@ -52,13 +52,14 @@ window.switchPage = function(pageId) {
     if(pageId === 'page-explore') { document.getElementById('nav-exp-mob')?.classList.add('active'); document.getElementById('nav-exp-desk')?.classList.add('active'); }
     if(pageId === 'page-settings') { document.getElementById('nav-set-mob')?.classList.add('active'); document.getElementById('nav-set-desk')?.classList.add('active'); }
     if(pageId !== 'page-read') {
-        if(window.audioEngine) window.audioEngine.pause(); window.scrollSpeed = 0; clearInterval(window.autoScrollInterval); clearInterval(window.hlInterval);
+        if(window.audioEngine) { window.audioEngine.pause(); window.audioEngine.ontimeupdate = null; }
+        window.scrollSpeed = 0; clearInterval(window.autoScrollInterval);
         if(document.getElementById('btn-autoscroll-txt')) document.getElementById('btn-autoscroll-txt').innerText = "Off";
     }
     window.scrollTo(0,0);
 };
 
-// --- AYAT HARI INI (WIDGETIZED) ---
+// --- WIDGET INSPIRASI HARI INI (DI PERBANYAK) ---
 window.renderAyatHariIni = function() {
     const quotes = [
         {a: "لَا يُكَلِّفُ اللّٰهُ نَفْسًا إِلَّا وُسْعَهَا", i: "Allah tidak membebani seseorang melainkan sesuai dengan kesanggupannya.", s: "Q.S Al-Baqarah : 286"},
@@ -67,7 +68,15 @@ window.renderAyatHariIni = function() {
         {a: "وَهُوَ مَعَكُمْ أَيْنَ مَا كُنْتُمْ", i: "Dan Dia bersamamu di mana saja kamu berada.", s: "Q.S Al-Hadid : 4"},
         {a: "فَاذْكُرُونِي أَذْكُرْكُمْ", i: "Maka ingatlah kepada-Ku, Aku pun akan ingat kepadamu.", s: "Q.S Al-Baqarah : 152"},
         {a: "وَاللّٰهُ يَعْلَمُ وَأَنْتُمْ لَا تَعْلَمُونَ", i: "Dan Allah mengetahui, sedang kamu tidak mengetahui.", s: "Q.S Al-Baqarah : 216"},
-        {a: "إِنَّ اللّٰهَ مَعَ الصَّابِرِينَ", i: "Sesungguhnya Allah beserta orang-orang yang sabar.", s: "Q.S Al-Baqarah : 153"}
+        {a: "إِنَّ اللّٰهَ مَعَ الصَّابِرِينَ", i: "Sesungguhnya Allah beserta orang-orang yang sabar.", s: "Q.S Al-Baqarah : 153"},
+        {a: "وَاصْبِرْ وَمَا صَبْرُكَ إِلَّا بِاللّٰهِ", i: "Dan bersabarlah (Muhammad), dan kesabaranmu itu semata-mata dengan pertolongan Allah.", s: "Q.S An-Nahl : 127"},
+        {a: "وَمَنْ يَتَوَكَّلْ عَلَى اللّٰهِ فَهُوَ حَسْبُهُ", i: "Dan barangsiapa bertawakal kepada Allah, niscaya Allah akan mencukupkan (keperluan)nya.", s: "Q.S At-Talaq : 3"},
+        {a: "لَئِنْ شَكَرْتُمْ لَأَزِيدَنَّكُمْ", i: "Sesungguhnya jika kamu bersyukur, niscaya Aku akan menambah (nikmat) kepadamu.", s: "Q.S Ibrahim : 7"},
+        {a: "أَلَا بِذِكْرِ اللّٰهِ تَطْمَئِنُّ الْقُلُوبُ", i: "Ingatlah, hanya dengan mengingat Allah hati menjadi tenteram.", s: "Q.S Ar-Ra'd : 28"},
+        {a: "وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَى", i: "Dan kelak Tuhanmu pasti memberikan karunia-Nya kepadamu, sehingga engkau rida.", s: "Q.S Ad-Duha : 5"},
+        {a: "رَبِّ إِنِّي لِمَا أَنْزَلْتَ إِلَيَّ مِنْ خَيْرٍ فَقِيرٌ", i: "Ya Tuhanku, sesungguhnya aku sangat memerlukan sesuatu kebaikan yang Engkau turunkan kepadaku.", s: "Q.S Al-Qasas : 24"},
+        {a: "لَا تَحْزَنْ إِنَّ اللّٰهَ مَعَنَا", i: "Janganlah engkau bersedih, sesungguhnya Allah bersama kita.", s: "Q.S At-Taubah : 40"},
+        {a: "إِنَّ أَكْرَمَكُمْ عِنْدَ اللّٰهِ أَتْقَاكُمْ", i: "Sesungguhnya yang paling mulia di antara kamu di sisi Allah ialah orang yang paling bertakwa.", s: "Q.S Al-Hujurat : 13"}
     ];
     const pick = quotes[Math.floor(Math.random() * quotes.length)];
     if(document.getElementById('aotd-arab')) {
@@ -93,7 +102,7 @@ window.renderSurahs = function(data) {
     const progressData = JSON.parse(localStorage.getItem('surahProgress')) || {};
     list.innerHTML = data.map(s => {
         const pct = progressData[s.nomor] || 0;
-        const estMins = Math.ceil((s.jumlahAyat * 12) / 60); // Estimasi: 1 Ayat = 12 Detik
+        const estMins = Math.ceil((s.jumlahAyat * 12) / 60); 
         return `
         <div class="surah-card" onclick="window.openSurah(${s.nomor})">
             <div class="s-num">${s.nomor}</div>
@@ -129,15 +138,17 @@ window.openSurah = async function(nomor, targetAyah = 1) {
         const res = await fetch(`${window.API_QURAN}/surat/${nomor}`);
         const json = await res.json();
         window.currentSurah = json.data;
-        document.getElementById('read-surah-name').innerHTML = `${window.currentSurah.namaLatin} <i class="fas fa-info-circle small text-muted"></i>`;
-        document.getElementById('read-surah-info').innerText = `Surat ke-${window.currentSurah.nomor} • ${window.currentSurah.arti}`;
         
+        // HAPUS INFO SURAT (TIDAK BISA DI KLIK LAGI)
+        document.getElementById('read-surah-name').innerHTML = window.currentSurah.namaLatin;
+        document.getElementById('jump-ayah').value = ''; // Reset input jump
+        document.getElementById('jump-ayah').max = window.currentSurah.jumlahAyat;
+
         let html = window.currentSurah.nomor !== 9 && window.currentSurah.nomor !== 1 ? `<div class="text-arab text-primary text-center font-arab" style="font-size:${window.prefs.arabSize}px;">بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</div>` : '';
         
         html += window.currentSurah.ayat.map((a, i) => {
             const isMarked = window.bookmarksArr.some(b => b.sNo === window.currentSurah.nomor && b.aNo === a.nomorAyat);
             
-            // Bungkus perkata untuk Auto-Highlight, lalu proses Tajwid
             let textArabTampil = a.teksArab.split(' ').map((word) => `<span class="q-word">${word}</span>`).join(' ');
             if(window.prefs.showTajwid && window.applyTajwid) textArabTampil = window.applyTajwid(textArabTampil);
             if(window.prefs.showWaqaf && window.applyWaqaf) textArabTampil = window.applyWaqaf(textArabTampil);
@@ -171,17 +182,36 @@ window.openSurah = async function(nomor, targetAyah = 1) {
     } catch(e) { alert("Gagal memuat surat."); window.switchPage('page-home'); }
 };
 
-// --- QARI PREMIUM (EVERYAYAH ENGINE) ---
+// --- JUMP TO AYAH (BARU) ---
+window.jumpToAyah = function() {
+    const val = parseInt(document.getElementById('jump-ayah').value);
+    if(!val || !window.currentSurah) return;
+    if(val > 0 && val <= window.currentSurah.jumlahAyat) {
+        const el = document.getElementById(`ayah-${val - 1}`);
+        if(el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+        alert("Nomor ayat tidak ditemukan.");
+    }
+};
+
+// --- QARI PREMIUM ---
 window.getAudioUrl = function(surahNo, ayahNo, qariId, defaultAudioObj) {
-    if (parseInt(qariId) <= 5) return defaultAudioObj[qariId] || defaultAudioObj["05"];
+    if (parseInt(qariId) <= 5 && qariId !== "04") return defaultAudioObj[qariId] || defaultAudioObj["05"];
+    
+    // Fallback & Mapping EveryAyah untuk Yasser, Saad, Maher, dll. (07: Saad Al Ghamdi Fix)
     const everyayahMap = {
         "06": "Yasser_Ad-Dussary_128kbps",
         "07": "Saad_Al_Ghamdi_128kbps",
         "08": "MaherAlMuaiqly128kbps",
-        "09": "Abdullah_Matroud_128kbps"
+        "09": "Abdullah_Matroud_128kbps",
+        "04": "Ibrahim_Akhdar_32kbps" // Fix Dawsari/Akhdar
     };
-    const s = String(surahNo).padStart(3, '0'); const a = String(ayahNo).padStart(3, '0');
-    return `https://everyayah.com/data/${everyayahMap[qariId]}/${s}${a}.mp3`;
+    
+    if (everyayahMap[qariId]) {
+        const s = String(surahNo).padStart(3, '0'); const a = String(ayahNo).padStart(3, '0');
+        return `https://everyayah.com/data/${everyayahMap[qariId]}/${s}${a}.mp3`;
+    }
+    return defaultAudioObj["05"];
 };
 
 window.playAyah = function(idx) {
@@ -191,36 +221,34 @@ window.playAyah = function(idx) {
     const audioUrl = window.getAudioUrl(window.currentSurah.nomor, aData.nomorAyat, window.prefs.qari, aData.audio);
     
     if (window.activeAyahIndex === idx && !window.audioEngine.paused) {
-        window.audioEngine.pause(); icon.className = 'fas fa-play'; clearInterval(window.hlInterval);
+        window.audioEngine.pause(); icon.className = 'fas fa-play'; window.audioEngine.ontimeupdate = null;
     } else {
         document.querySelectorAll('.btn-ayah-action .fa-pause').forEach(i => i.className = 'fas fa-play');
         document.querySelectorAll('.ayah-item').forEach(el => el.classList.remove('playing'));
         document.querySelectorAll('.q-word').forEach(w => w.classList.remove('hl-active'));
-        clearInterval(window.hlInterval);
+        window.audioEngine.ontimeupdate = null;
         
         if (window.activeAyahIndex !== idx || window.audioEngine.src !== audioUrl) window.audioEngine.src = audioUrl;
         
-        window.audioEngine.playbackRate = parseFloat(window.prefs.audioSpeed); // SMART AUDIO SPEED
+        window.audioEngine.playbackRate = parseFloat(window.prefs.audioSpeed); 
         window.audioEngine.play(); window.activeAyahIndex = idx; icon.className = 'fas fa-pause';
         if(window.updateMediaSession) window.updateMediaSession(idx);
         
         const card = document.getElementById(`ayah-${idx}`);
         if(card) { card.classList.add('playing'); card.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
         
-        // AUTO-HIGHLIGHT PER KATA (INTERACTIVE READING)
+        // AUTO-HIGHLIGHT FIX (MENGGUNAKAN TIMEUPDATE - AKURAT)
         if(window.prefs.autoHighlight) {
-            window.audioEngine.onloadedmetadata = () => {
+            window.audioEngine.ontimeupdate = () => {
+                if(!window.audioEngine.duration) return;
                 const words = document.querySelectorAll(`#ayah-${idx} .q-word`);
                 if(words.length === 0) return;
-                const timePerWord = (window.audioEngine.duration / window.audioEngine.playbackRate) / words.length * 1000;
-                let cWord = 0;
-                if(words[0]) words[0].classList.add('hl-active');
-                window.hlInterval = setInterval(() => {
-                    words.forEach(w => w.classList.remove('hl-active'));
-                    cWord++;
-                    if(words[cWord]) words[cWord].classList.add('hl-active');
-                    if(cWord >= words.length) clearInterval(window.hlInterval);
-                }, timePerWord);
+                const progress = window.audioEngine.currentTime / window.audioEngine.duration;
+                const currentWord = Math.floor(progress * words.length);
+                words.forEach((w, i) => {
+                    if(i === currentWord) w.classList.add('hl-active');
+                    else w.classList.remove('hl-active');
+                });
             };
         }
     }
@@ -230,7 +258,7 @@ if(window.audioEngine) {
     window.audioEngine.addEventListener('ended', () => {
         const currentIcon = document.getElementById(`icon-play-${window.activeAyahIndex}`);
         if(currentIcon) currentIcon.className = 'fas fa-play';
-        clearInterval(window.hlInterval); document.querySelectorAll('.q-word').forEach(w => w.classList.remove('hl-active'));
+        window.audioEngine.ontimeupdate = null; document.querySelectorAll('.q-word').forEach(w => w.classList.remove('hl-active'));
         if (window.prefs.autoplay && window.currentSurah && window.activeAyahIndex < window.currentSurah.ayat.length - 1) window.playAyah(window.activeAyahIndex + 1);
     });
 }
@@ -287,7 +315,7 @@ window.shareAyah = function(idx) {
     if (navigator.share) navigator.share({ title: 'Rifqy Quran', text: textToShare }); else { navigator.clipboard.writeText(textToShare); alert("Teks & Link disalin!"); }
 };
 
-// --- SETTINGS (SPEED, TIMER, HIGHLIGHT) ---
+// --- SETTINGS (Qari, Speed, Timer, Highlight) ---
 window.changeQari = function() { 
     window.prefs.qari = document.getElementById('read-qari-selector').value; 
     window.savePrefs(); window.loadPrefsUI();
@@ -425,20 +453,6 @@ window.startPrayerCountdown = function(timings) {
 
 window.openModal = function(id) { const m = document.getElementById(id); if(m) m.style.display = 'flex'; };
 window.closeModal = function(id) { const m = document.getElementById(id); if(m) m.style.display = 'none'; };
-
-window.renderCalGrid = function() {
-    const calGrid = document.getElementById('cal-grid'); if(!calGrid) return;
-    try {
-        const formatterMonth = new Intl.DateTimeFormat('id-ID-u-ca-islamic', { month: 'long', year: 'numeric' });
-        const formatterDay = new Intl.DateTimeFormat('en-US-u-ca-islamic', { day: 'numeric' });
-        document.getElementById('cal-month-year').innerText = formatterMonth.format(new Date());
-        const today = parseInt(formatterDay.format(new Date()));
-        calGrid.innerHTML = Array.from({length: 30}, (_, i) => `<div class="cal-day ${i+1 === today ? 'today' : ''}">${i+1}</div>`).join('');
-    } catch(e) {
-        document.getElementById('cal-month-year').innerText = "Bulan Hijriah";
-        calGrid.innerHTML = Array.from({length: 30}, (_, i) => `<div class="cal-day">${i+1}</div>`).join('');
-    }
-};
 
 window.tahfidzMode = false;
 window.toggleTahfidzMode = function() {
