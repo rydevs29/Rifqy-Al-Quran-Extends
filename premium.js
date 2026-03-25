@@ -51,22 +51,24 @@ window.downloadWallpaper = function() {
     
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses Gambar...';
     
-    html2canvas(canvasEl, { scale: 2, useCORS: true, backgroundColor: null }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = `RifqyQuran-Wallpaper.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-        
-        btn.innerHTML = oldText;
-        window.closeModal('modal-wallpaper');
-        alert("Wallpaper berhasil diunduh ke galeri!");
-    }).catch(err => {
-        alert("Gagal mengunduh gambar.");
-        btn.innerHTML = oldText;
-    });
+    // Memberikan waktu browser untuk render CSS sebelum menangkap layar
+    setTimeout(() => {
+        html2canvas(canvasEl, { scale: 2, useCORS: true, backgroundColor: null }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `RifqyQuran-Wallpaper.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            
+            btn.innerHTML = oldText;
+            window.closeModal('modal-wallpaper');
+            alert("Wallpaper berhasil diunduh ke galeri!");
+        }).catch(err => {
+            alert("Gagal mengunduh gambar.");
+            btn.innerHTML = oldText;
+        });
+    }, 300);
 };
 
-// --- MEDIA SESSION ---
 window.initMediaSession = function() {
     if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('play', () => { if(window.audioEngine) window.audioEngine.play(); });
@@ -90,4 +92,11 @@ window.updateMediaSession = function(idx) {
             artwork: [{ src: 'https://equran.id/favicon.png', sizes: '512x512', type: 'image/png' }]
         });
     }
+};
+
+// Fungsi Helper untuk Popup Tajwid & Waqaf (Diambil dari onclick elemen html)
+window.showWaqafInfo = function(event, charInfo) {
+    if (event) event.stopPropagation();
+    if (!window.prefs.popupWaqaf) return; // Jika toggle mati, tidak terjadi apa-apa
+    window.openModal('modal-waqaf-guide');
 };
